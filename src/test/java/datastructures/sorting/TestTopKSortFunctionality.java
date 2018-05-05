@@ -23,4 +23,44 @@ public class TestTopKSortFunctionality extends BaseTest {
             assertEquals(15 + i, top.get(i));
         }
     }
+    
+    @Test(timeout=SECOND)
+    public void testInsert() {
+        
+    }
+    
+    @Test(timeout=SECOND) 
+    public void testBasicPeek() {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testBasicRemove() {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertAndRemove() {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertRepeat() {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRemoveError () {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeekError() {
+        
+    }
+    
+    @Test(timeout=SECOND)
+    public void testNullKey() {
+        
+    }  
 }

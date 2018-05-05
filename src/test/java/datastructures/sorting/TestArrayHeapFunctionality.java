@@ -1,8 +1,10 @@
 package datastructures.sorting;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import misc.BaseTest;
+import misc.exceptions.EmptyContainerException;
 import datastructures.concrete.ArrayHeap;
 import datastructures.interfaces.IPriorityQueue;
 import org.junit.Test;
@@ -22,4 +24,107 @@ public class TestArrayHeapFunctionality extends BaseTest {
         assertEquals(1, heap.size());
         assertTrue(!heap.isEmpty());
     }
+    
+    @Test(timeout=SECOND)
+    public void testInsert() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(20);
+        assertEquals(20, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertFront() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(10);
+        heap.insert(5);
+        assertEquals(5, heap.peekMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertUpdatesSizeCorrectly() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 1; i <= 3; i++) {
+            heap.insert(i);
+            assertEquals(i, heap.size());
+        }
+    }
+    
+    @Test(timeout=SECOND) 
+    public void testBasicPeek() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(100);
+        assertEquals(100, heap.peekMin());
+        assertEquals(1, heap.size());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testBasicRemove() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(100);
+        assertEquals(100, heap.removeMin());
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRemoveUpdatesSizeCorrectly() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 5; i++) {
+            heap.insert(i);
+        }
+        for (int i = 0; i < 5; i++) {
+            assertEquals(i, heap.removeMin());
+            assertEquals(5 - i - 1, heap.size());
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertAndRemove() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 10; i++) {
+            heap.insert(i);
+            assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInsertRepeat() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i < 10; i++) {
+            heap.insert(2);
+            assertEquals(2, heap.peekMin());
+            assertEquals(i + 1, heap.size());
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRemoveError () {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        try {
+            heap.removeMin();
+            fail("Expected EmptyContainerException");
+        } catch (EmptyContainerException x) {
+            // do nothing
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testPeekError() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        try {
+            heap.peekMin();
+            fail("Expected EmptyContainerException");
+        } catch (EmptyContainerException x) {
+            // do nothing
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testNullKey() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(null);
+        assertEquals(1, heap.size());
+        heap.removeMin();
+        assertTrue(heap.isEmpty());
+    }    
 }
