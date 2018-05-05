@@ -72,9 +72,12 @@ public class TestArrayHeapFunctionality extends BaseTest {
             heap.insert(i);
         }
         for (int i = 0; i < 5; i++) {
-            assertEquals(i, heap.removeMin());
+            int temp = heap.removeMin();
+            assertEquals(i, temp);
+            System.out.println("i: " + i + " temp: " + temp);
             assertEquals(5 - i - 1, heap.size());
         }
+        assertTrue(heap.isEmpty());
     }
     
     @Test(timeout=SECOND)
@@ -122,9 +125,11 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testNullKey() {
         IPriorityQueue<Integer> heap = this.makeInstance();
-        heap.insert(null);
-        assertEquals(1, heap.size());
-        heap.removeMin();
-        assertTrue(heap.isEmpty());
+        try {
+            heap.insert(null);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException i) {
+            // do nothing
+        }
     }    
 }

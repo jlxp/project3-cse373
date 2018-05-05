@@ -25,8 +25,9 @@ public class TestTopKSortFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testInsert() {
-        
+    public void testAdd() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        list.add(10);
     }
     
     @Test(timeout=SECOND) 
