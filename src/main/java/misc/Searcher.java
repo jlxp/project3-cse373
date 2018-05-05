@@ -1,5 +1,6 @@
 package misc;
 
+import datastructures.concrete.ArrayHeap;
 import datastructures.interfaces.IList;
 import misc.exceptions.NotYetImplementedException;
 
@@ -30,7 +31,12 @@ public class Searcher {
         //
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
-
-        throw new NotYetImplementedException();
+        if (k < 0) {
+            throw new IllegalArgumentException("Not a valid numbr of elements");
+        }
+        
+        ArrayHeap<T> result = new ArrayHeap<>();
+        
+        
     }
 }
