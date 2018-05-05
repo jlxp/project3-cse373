@@ -51,8 +51,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         int index = 0;
         while (!found) {
             // find smol child
-            int count = 0;
-            if (this.size > index * 4 + 4) {
+            int count = 1;
+            if (this.size > index * 4) {
                 for (int i = 1; i <= 4; i++) {
                     T temp = this.heap[4 * index + i];
                     if (temp != null && temp.compareTo(this.heap[4 * index + count]) < 0) {
@@ -60,7 +60,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                     }
                     System.out.println("i: " + i + " count: " + count);
                 }
-                if (this.heap[index].compareTo(this.heap[4 * index + count]) > 0) {
+                if (index < this.size / 4 && this.heap[index].compareTo(this.heap[4 * index + count]) > 0) {
                     T temp = this.heap[4 * index + count];
                     this.heap[4 * index + count] = this.heap[index];
                     this.heap[index] = temp;
