@@ -4,6 +4,10 @@ import misc.BaseTest;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
 import misc.Searcher;
+
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 
 /**
@@ -41,40 +45,65 @@ public class TestTopKSortFunctionality extends BaseTest {
         assertEquals(5, top.remove());
         assertEquals(4, top.remove());
         assertEquals(3, top.remove());
+        assertTrue(top.isEmpty());
     }
     
     @Test(timeout=SECOND) 
-    public void testBasicPeek() {
+    public void testMultipleSameElement() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        
+        for (int i = 0; i < 10; i++) {
+            list.add(5);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(5, list);
+        assertEquals(5, top.size());
+        
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(5, top.get(i));
+        }
         
     }
     
     @Test(timeout=SECOND)
-    public void testBasicRemove() {
-        
+    public void testIllegalCase() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(i);
+        }
+
+        try {
+            IList<Integer> top = Searcher.topKSort(-1, list);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // do nothing yay
+        }
     }
     
     @Test(timeout=SECOND)
-    public void testInsertAndRemove() {
+    public void testNullElementCase() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(i);
+        }
         
+        list.add(null);
+        
+        try {
+            IList<Integer> top = Searcher.topKSort(5, list);
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e) {
+            // do nothing yay
+        }
     }
     
     @Test(timeout=SECOND)
-    public void testInsertRepeat() {
+    public void testEmptyCase() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        IList<Integer> top = Searcher.topKSort(5, list);
+        
+        assertTrue(top.isEmpty());
         
     }
     
-    @Test(timeout=SECOND)
-    public void testRemoveError () {
-        
-    }
-    
-    @Test(timeout=SECOND)
-    public void testPeekError() {
-        
-    }
-    
-    @Test(timeout=SECOND)
-    public void testNullKey() {
-        
-    }  
 }

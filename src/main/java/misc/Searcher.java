@@ -34,20 +34,31 @@ public class Searcher {
         if (k < 0) {
             throw new IllegalArgumentException("Not a valid numbr of elements");
         }
-
+                
         ArrayHeap<T> result = new ArrayHeap<>();
         
         if (k >= input.size()) {
             for (int i = 0; i < input.size(); i++) {
-                result.insert(input.get(i));
+                T temp = input.get(i);
+                if (temp == null) {
+                    throw new IllegalArgumentException("null null");
+                }
+                result.insert(temp);
             }
         } else {
             for (int i = 0; i < k; i++) {
-                result.insert(input.get(i));
+                T temp = input.get(i);
+                if (temp == null) {
+                    throw new IllegalArgumentException("null null");
+                }
+                result.insert(temp);               
             }
             
             for (int i = k; i < input.size(); i++) {
                 T temp = input.get(i);
+                if (temp == null) {
+                    throw new IllegalArgumentException("null null");
+                }
                 if (temp.compareTo(result.peekMin()) > 0) {
                     result.removeMin();
                     result.insert(temp);
