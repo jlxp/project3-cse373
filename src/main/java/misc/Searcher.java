@@ -3,6 +3,7 @@ package misc;
 import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
+import datastructures.interfaces.IPriorityQueue;
 
 public class Searcher {
     /**
@@ -35,7 +36,7 @@ public class Searcher {
             throw new IllegalArgumentException("Not a valid numbr of elements");
         }
                 
-        ArrayHeap<T> result = new ArrayHeap<>();
+        IPriorityQueue<T> result = new ArrayHeap<>();
         
         if (k >= input.size()) {
             for (int i = 0; i < input.size(); i++) {

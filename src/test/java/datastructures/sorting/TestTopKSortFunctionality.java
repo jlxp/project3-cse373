@@ -106,4 +106,20 @@ public class TestTopKSortFunctionality extends BaseTest {
         
     }
     
+    @Test(timeout=SECOND)
+    public void testBigK() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < 20; i++) {
+            list.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(20, list);
+        
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(i, top.get(i));
+        }
+    }
+    
+    
+    
 }

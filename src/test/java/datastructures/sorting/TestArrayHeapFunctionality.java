@@ -131,5 +131,26 @@ public class TestArrayHeapFunctionality extends BaseTest {
         } catch (IllegalArgumentException i) {
             // do nothing
         }
-    }    
+    }
+    
+    @Test(timeout=SECOND)
+    public void testSingleElement() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(3);
+        
+        assertEquals(3, heap.removeMin());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testTwoChildren() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        heap.insert(3);
+        heap.insert(5);
+        heap.insert(6);
+        
+        assertEquals(3, heap.removeMin());
+        assertEquals(5, heap.removeMin());
+        assertEquals(6, heap.removeMin());
+
+    }
 }

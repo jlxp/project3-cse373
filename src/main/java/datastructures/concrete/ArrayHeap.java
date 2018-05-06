@@ -9,7 +9,8 @@ import misc.exceptions.EmptyContainerException;
 public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // See spec: you must implement a implement a 4-heap.
     private static final int NUM_CHILDREN = 4;
-    private static final int INIT_SIZE = 10;
+    private static final int INIT_SIZE = NUM_CHILDREN * (NUM_CHILDREN + 1) + 1;
+    
     // You MUST use this field to store the contents of your heap.
     // You may NOT rename this field: we will be inspecting it within
     // our private tests.
@@ -48,27 +49,43 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heap[this.size - 1] = null;
         boolean found = false;
         int index = 0;
-        while (!found) {
-            // find smol child
+        while (!found) {            
             int count = 1;
-            if (this.size > index * 4) {
-                for (int i = 1; i <= 4; i++) {
-                    T temp = this.heap[4 * index + i];
-                    if (temp != null && temp.compareTo(this.heap[4 * index + count]) < 0) {
+            if (index < this.size / NUM_CHILDREN) {
+                for (int i = 1; i <= NUM_CHILDREN; i++) {
+                    T temp = this.heap[NUM_CHILDREN * index + i];
+                    if (temp == null) {
+                        break;
+                    } else if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
                         count = i;
                     }
-                    System.out.println("i: " + i + " count: " + count);
                 }
-                if (index < this.size / 4 && this.heap[index].compareTo(this.heap[4 * index + count]) > 0) {
-                    T temp = this.heap[4 * index + count];
-                    this.heap[4 * index + count] = this.heap[index];
+                if (index < this.size / NUM_CHILDREN && this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) {
+                    T temp = this.heap[NUM_CHILDREN * index + count];
+                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
                     this.heap[index] = temp;
-                    index = 4 * index + count;
+                    index = NUM_CHILDREN * index + count;
                 } else {
                     found = true;
                 }
             } else {
-                found = true;
+//                for (int i = 1; i <= NUM_CHILDREN; i++) {
+//                    T temp = this.heap[NUM_CHILDREN * index + i];
+//                    if (temp == null) {
+//                        break;
+//                    } else if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
+//                        count = i;
+//                    }
+//                }
+                
+                if (this.heap[NUM_CHILDREN * index] != null && this.heap[index].compareTo(this.heap[NUM_CHILDREN * index]) > 0) {
+                    T temp = this.heap[NUM_CHILDREN * index + count];
+                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
+                    this.heap[index] = temp;
+                    index = NUM_CHILDREN * index + count;
+                } else {
+                    found = true;
+                }
             }
         }
         this.size--;
@@ -88,23 +105,22 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null");
         }
-        if (this.size < this.heap.length) {
-            this.heap[this.size] = item;
-        } else {
+        if (this.size >= this.heap.length) {
             T[] temp = this.makeArrayOfT(this.heap.length * 2);
             for (int i = 0; i < this.size; i++) {
                 temp[i] = this.heap[i];
             }
-            this.heap = temp;
+            this.heap = temp;            
         }
+        this.heap[this.size] = item;
         boolean found = false;
         int index = this.size;
-        while (!found) {
-            if (this.size >= index / 4 && this.heap[index].compareTo(this.heap[index / 4]) < 0) {
-                T temp = this.heap[index / 4];
-                this.heap[index / 4] = this.heap[index];
+        while (!found) {         
+            if (this.size >= index / NUM_CHILDREN && this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
+                T temp = this.heap[index / NUM_CHILDREN];
+                this.heap[index / NUM_CHILDREN] = this.heap[index];
                 this.heap[index] = temp;
-                index = index / 4;
+                index = index / NUM_CHILDREN;
             } else {
                 found = true;
             }
