@@ -1,8 +1,8 @@
 package misc;
 
 import datastructures.concrete.ArrayHeap;
+import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
-import misc.exceptions.NotYetImplementedException;
 
 public class Searcher {
     /**
@@ -34,9 +34,31 @@ public class Searcher {
         if (k < 0) {
             throw new IllegalArgumentException("Not a valid numbr of elements");
         }
-        
+
         ArrayHeap<T> result = new ArrayHeap<>();
         
+        if (k >= input.size()) {
+            for (int i = 0; i < input.size(); i++) {
+                result.insert(input.get(i));
+            }
+        } else {
+            for (int i = 0; i < k; i++) {
+                result.insert(input.get(i));
+            }
+            
+            for (int i = k; i < input.size(); i++) {
+                T temp = input.get(i);
+                if (temp.compareTo(result.peekMin()) > 0) {
+                    result.removeMin();
+                    result.insert(temp);
+                }
+            }
+        }
         
+        IList<T> resultList = new DoubleLinkedList<>();
+        while(!result.isEmpty()) {
+            resultList.add(result.removeMin());            
+        }
+        return resultList;
     }
 }

@@ -25,9 +25,22 @@ public class TestTopKSortFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testAdd() {
+    public void testElementLessCase() {
         IList<Integer> list = new DoubleLinkedList<>();
-        list.add(10);
+        list.add(5);
+        list.add(4);
+        list.add(7);
+        list.add(9);
+        list.add(3);
+        
+        IList<Integer> top = Searcher.topKSort(7, list);
+        assertEquals(5, top.size());
+        
+        assertEquals(9, top.remove());
+        assertEquals(7, top.remove());
+        assertEquals(5, top.remove());
+        assertEquals(4, top.remove());
+        assertEquals(3, top.remove());
     }
     
     @Test(timeout=SECOND) 

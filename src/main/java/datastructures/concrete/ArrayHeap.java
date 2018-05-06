@@ -2,7 +2,6 @@ package datastructures.concrete;
 
 import datastructures.interfaces.IPriorityQueue;
 import misc.exceptions.EmptyContainerException;
-import misc.exceptions.NotYetImplementedException;
 
 /**
  * See IPriorityQueue for details on what each method must do.
@@ -101,7 +100,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         boolean found = false;
         int index = this.size;
         while (!found) {
-            if (this.size > index / 4 && this.heap[index].compareTo(this.heap[index / 4]) < 0) {
+            if (this.size >= index / 4 && this.heap[index].compareTo(this.heap[index / 4]) < 0) {
                 T temp = this.heap[index / 4];
                 this.heap[index / 4] = this.heap[index];
                 this.heap[index] = temp;
