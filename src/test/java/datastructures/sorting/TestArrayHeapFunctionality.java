@@ -145,8 +145,8 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testTwoChildren() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         heap.insert(3);
-        heap.insert(5);
         heap.insert(6);
+        heap.insert(5);
         
         assertEquals(3, heap.removeMin());
         assertEquals(5, heap.removeMin());

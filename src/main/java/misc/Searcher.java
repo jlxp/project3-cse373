@@ -46,7 +46,7 @@ public class Searcher {
                 }
                 result.insert(temp);
             }
-        } else {
+        } else if (k > 0) {
             for (int i = 0; i < k; i++) {
                 T temp = input.get(i);
                 if (temp == null) {

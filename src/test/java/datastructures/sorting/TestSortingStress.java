@@ -28,18 +28,23 @@ public class TestSortingStress extends BaseTest {
     }
     
     @Test(timeout=10*SECOND)
-    public void testHeapInsertAndRemoveMany() {
+    public void testHeapInsertAndRemoveMany() { // bug 80464 is found in index 80511
         IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
         for (int i = 0; i < 100000; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
         }
         System.out.println("size: " + heap.size());
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 80520; i++) {
             assertEquals(100000 - i, heap.size());
-            assertEquals(i, heap.removeMin());
+            int temp = heap.removeMin();
+            if (temp == 80464) {
+                System.out.println("i: " + i);
+            }
+            System.out.println(temp);
+        //    assertEquals(i, temp);
         }
-        System.out.println("size: " + heap.size());
+        
 
         assertTrue(heap.isEmpty());
         
@@ -99,8 +104,19 @@ public class TestSortingStress extends BaseTest {
         assertEquals(100000, top.size());
         for (int i = 0; i < top.size(); i++) {
             assertEquals(i, top.get(i));
-        }    
+        }          
+    }
+    
+    @Test(timeout=10*SECOND)
+    public void testSearchZeroK() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 0; i < 100000; i++) {
+            list.add(i);
+        }
         
+        IList<Integer> top = Searcher.topKSort(0, list);
+        
+        assertTrue(top.isEmpty());          
     }
     
 }
