@@ -50,7 +50,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         boolean found = false;
         int index = 0;
         while (!found) {            
-            int count = 1;
+            int count = 0;
             if (index < this.size / NUM_CHILDREN) {
                 for (int i = 1; i <= NUM_CHILDREN; i++) {
                     T temp = this.heap[NUM_CHILDREN * index + i];
@@ -69,20 +69,20 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                     found = true;
                 }
             } else {
-//                for (int i = 1; i <= NUM_CHILDREN; i++) {
-//                    T temp = this.heap[NUM_CHILDREN * index + i];
-//                    if (temp == null) {
-//                        break;
-//                    } else if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
-//                        count = i;
-//                    }
-//                }
+                // buggy: this else statement represents the leaf node, so nothing should not happen here, but why not 
+                for (int i = 0; i < NUM_CHILDREN; i++) {
+                    T temp = this.heap[index + i];
+                    if (temp == null) {
+                        break;
+                    } else if (temp != null && temp.compareTo(this.heap[index + count]) < 0) {
+                        count = i;
+                    }
+                }
                 
-                if (this.heap[NUM_CHILDREN * index] != null && this.heap[index].compareTo(this.heap[NUM_CHILDREN * index]) > 0) {
-                    T temp = this.heap[NUM_CHILDREN * index + count];
-                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
+                if (this.heap[index + count] != null && this.heap[index].compareTo(this.heap[ index + count]) > 0) {
+                    T temp = this.heap[index + count];
+                    this.heap[index + count] = this.heap[index];
                     this.heap[index] = temp;
-                    index = NUM_CHILDREN * index + count;
                 } else {
                     found = true;
                 }

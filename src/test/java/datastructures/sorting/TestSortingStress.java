@@ -37,7 +37,7 @@ public class TestSortingStress extends BaseTest {
         System.out.println("size: " + heap.size());
         for (int i = 0; i < 100000; i++) {
             assertEquals(100000 - i, heap.size());
-            //assertEquals(i, heap.removeMin());
+            assertEquals(i, heap.removeMin());
         }
         System.out.println("size: " + heap.size());
 
