@@ -17,14 +17,14 @@ public class TestTopKSortFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testSimpleUsage() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             list.add(i);
         }
 
-        IList<Integer> top = Searcher.topKSort(5, list);
-        assertEquals(5, top.size());
+        IList<Integer> top = Searcher.topKSort(10, list);
+        assertEquals(10, top.size());
         for (int i = 0; i < top.size(); i++) {
-            assertEquals(15 + i, top.get(i));
+            assertEquals(90 + i, top.get(i));
         }
     }
     
@@ -52,12 +52,12 @@ public class TestTopKSortFunctionality extends BaseTest {
     public void testMultipleSameElement() {
         IList<Integer> list = new DoubleLinkedList<>();
         
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             list.add(5);
         }
         
-        IList<Integer> top = Searcher.topKSort(5, list);
-        assertEquals(5, top.size());
+        IList<Integer> top = Searcher.topKSort(10, list);
+        assertEquals(10, top.size());
         
         for (int i = 0; i < top.size(); i++) {
             assertEquals(5, top.get(i));
@@ -83,14 +83,14 @@ public class TestTopKSortFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testNullElementCase() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             list.add(i);
         }
         
         list.add(null);
         
         try {
-            IList<Integer> top = Searcher.topKSort(5, list);
+            IList<Integer> top = Searcher.topKSort(10, list);
             fail("Expected IllegalArgumentException");
         } catch (IllegalArgumentException e) {
             // do nothing yay
@@ -109,11 +109,11 @@ public class TestTopKSortFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testBigK() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 100; i++) {
             list.add(i);
         }
         
-        IList<Integer> top = Searcher.topKSort(20, list);
+        IList<Integer> top = Searcher.topKSort(100, list);
         
         for (int i = 0; i < top.size(); i++) {
             assertEquals(i, top.get(i));
