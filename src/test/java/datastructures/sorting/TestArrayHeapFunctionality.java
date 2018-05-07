@@ -90,6 +90,19 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
+    public void testBackward() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 100; i > 0; i--) {
+            heap.insert(i);
+        }
+        
+        for (int i = 1; i <= 100; i++) {
+            assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
     public void testInsertRepeat() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 0; i < 100; i++) {
