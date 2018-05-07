@@ -47,6 +47,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         T result = this.peekMin();
         this.heap[0] = this.heap[this.size - 1];
         this.heap[this.size - 1] = null;
+        this.size--;
               
         boolean found = false;
         int index = 0;        
@@ -60,7 +61,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                         count = i;
                     }
                 }
-                if (index < this.size / 4 && this.heap[index].compareTo(this.heap[4 * index + count]) > 0) {
+                if (index < this.size / 4) {// && this.heap[index].compareTo(this.heap[4 * index + count]) > 0) {
                     T temp = this.heap[4 * index + count];
                     this.heap[4 * index + count] = this.heap[index];
                     this.heap[index] = temp;
@@ -69,10 +70,23 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                     found = true;
                 }
             } else {
-                found = true;
+                T temp = this.heap[0];
+                int minDex = 0;
+                for (int i = 1; i < this.size; i++) {
+                    if (temp != null && this.heap[i].compareTo(this.heap[minDex]) < 0) {
+                        minDex = i;
+                    }
+                }
+                if (minDex < this.size) {
+                    T old = this.heap[0];
+                    this.heap[0] = this.heap[minDex];
+                    this.heap[minDex] = old;
+                } else {
+                    found = true;
+                }
             }
         }
-        // below is our latest versioon that consider edge cases -- work worse than original somehow
+        // below is our latest version that consider edge cases -- work worse than original somehow
 //        while (!found) {            
 //            int count = 0;
 //            if (index < (this.size - 2) / NUM_CHILDREN) { // general branch nodes
@@ -113,7 +127,6 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
 //
 //            }
 //        }
-        this.size--;
         return result;
     }
 
