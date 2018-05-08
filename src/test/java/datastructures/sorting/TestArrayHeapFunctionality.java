@@ -99,8 +99,8 @@ public class TestArrayHeapFunctionality extends BaseTest {
         
         System.out.println(heap.toString());
         for (int i = 1; i <= 100; i++) {
-            assertEquals(i, heap.removeMin());
             System.out.println(heap.toString());
+            assertEquals(i, heap.removeMin());          
         }
         assertTrue(heap.isEmpty());
     }

@@ -48,8 +48,11 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heap[0] = this.heap[this.size - 1];
         this.heap[this.size - 1] = null;
               
+        
         boolean found = false;
-        int index = 0;        
+        int index = 0;
+        
+        
         while (!found) {
             int count = 1;
             if (index < this.size / NUM_CHILDREN) { 
