@@ -48,28 +48,27 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heap[0] = this.heap[this.size - 1];
         this.heap[this.size - 1] = null;
         
-        
-        boolean found = false;
         int index = 0;
-        while (!found) {
-            int count = 1;
-            if (index < this.size / NUM_CHILDREN) { 
-                for (int i = 1; i <= NUM_CHILDREN; i++) {
-                    T temp = this.heap[NUM_CHILDREN * index + i];
-                    if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
-                        count = i;
-                    }
+        
+        // percorlating down
+        while (index < this.size / NUM_CHILDREN || (index * NUM_CHILDREN + 1 <= this.size && this.heap[index * NUM_CHILDREN + 1] != null)) {
+            // while loop condition: first: the index is not leaf node, 
+            // or second: we have the most left child of the node at index is not null if that left child exists in heap array
+            int count = 1; // the second condition of while loop exists because of this integer!!! (can't change this tho)
+            for (int i = 1; i <= NUM_CHILDREN; i++) { // find child of the minimum value
+                T temp = this.heap[NUM_CHILDREN * index + i];
+                if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
+                    count = i;
                 }
-                if (this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) {
-                    T temp = this.heap[NUM_CHILDREN * index + count];
-                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
-                    this.heap[index] = temp;
-                    index = NUM_CHILDREN * index + count;
-                } else {
-                    found = true;
-                }
-            } else {
-                found = true;
+            }
+            
+            if (this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) { // swap if kid is babby
+                T temp = this.heap[NUM_CHILDREN * index + count];
+                this.heap[NUM_CHILDREN * index + count] = this.heap[index];
+                this.heap[index] = temp;
+                index = NUM_CHILDREN * index + count; // our "recursion"
+            } else { // we done, we no more loopin
+                break;
             }
         }
         this.size--;
@@ -96,11 +95,14 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             }
             this.heap = temp;            
         }
+
         int index = this.size;
         this.heap[index] = item;
         
         // percolating up 
-        while(index > 0 && this.heap[(index - 1) / NUM_CHILDREN].compareTo(this.heap[index]) > 0) { // parent exists in the case when index is greater than 0, 
+        while(index > 0 && this.heap[(index - 1) / NUM_CHILDREN].compareTo(this.heap[index]) > 0) { 
+            // parent exists in the case when index is greater than 0
+            // loop only happens when child is big
             T temp = this.heap[index];
             this.heap[index] = this.heap[(index - 1) / NUM_CHILDREN];
             this.heap[(index - 1) / NUM_CHILDREN] = temp;

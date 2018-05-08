@@ -16,10 +16,13 @@ import static org.junit.Assert.assertTrue;
  * See spec for details on what kinds of tests this class should include.
  */
 public class TestSortingStress extends BaseTest {
+    protected <T extends Comparable<T>> IPriorityQueue<T> makeInstance() {
+        return new ArrayHeap<>();
+    }
     
     @Test(timeout=10*SECOND)
     public void testHeapManyElementsInsert() {
-        IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
+        IPriorityQueue<Integer> heap = this.makeInstance(); 
         for (int i = 0; i < 100000; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
@@ -29,7 +32,7 @@ public class TestSortingStress extends BaseTest {
     
     @Test(timeout=10*SECOND)
     public void testHeapInsertAndRemoveMany() { // bug 80464 is found in index 80511
-        IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
+        IPriorityQueue<Integer> heap = this.makeInstance(); 
         for (int i = 0; i < 100000; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
@@ -40,15 +43,37 @@ public class TestSortingStress extends BaseTest {
             int temp = heap.removeMin();
             assertEquals(i, temp);
         }
+        assertTrue(heap.isEmpty());        
+    }
+    
+    @Test(timeout=10*SECOND)
+    public void testTransferMany() { // bug 80464 is found in index 80511
+        IPriorityQueue<Integer> heap = this.makeInstance(); 
+        IPriorityQueue<Integer> copy = this.makeInstance(); 
+        IPriorityQueue<Integer> temp = this.makeInstance(); 
         
-
-        assertTrue(heap.isEmpty());
+        for (int i = 0; i < 100000; i++) {
+            heap.insert(i);
+            temp.insert(i);
+            assertEquals(i + 1, heap.size());
+        }
         
+        for (int i = 0; i < 100000; i++) {
+            copy.insert(heap.removeMin());
+        }
+        
+        for (int i = 0; i < 100000; i++) {
+            assertEquals(copy.removeMin(), temp.removeMin());
+        }
+        
+        assertTrue(heap.isEmpty());  
+        assertTrue(temp.isEmpty());
+        assertTrue(copy.isEmpty());
     }
     
     @Test(timeout=10*SECOND)
     public void testHeapInsertAndRemoveSameElement() {
-        IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
+        IPriorityQueue<Integer> heap = this.makeInstance(); 
         for (int i = 0; i < 100000; i++) {
             heap.insert(1000);
             assertEquals(i + 1, heap.size());
@@ -57,13 +82,12 @@ public class TestSortingStress extends BaseTest {
         for (int i = 0; i < 100000; i++) {
             assertEquals(1000, heap.removeMin());
             assertEquals(100000 - i - 1, heap.size());
-        }
-        
+        }        
     }
     
     @Test(timeout=10*SECOND)
     public void testHeapBackward() {
-        IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
+        IPriorityQueue<Integer> heap = this.makeInstance(); 
         for (int i = 0; i < 100000; i++) {
             heap.insert(100000 - i - 1);
             assertEquals(i + 1, heap.size());
@@ -84,7 +108,7 @@ public class TestSortingStress extends BaseTest {
         
         IList<Integer> top = Searcher.topKSort(1000, list);
         
-        for (int i = 0; i < top.size(); i++) {
+        for (int i = 0; i < 1000; i++) {
             assertEquals(i + list.size() - 1000, top.get(i));
         }
     }
@@ -99,8 +123,8 @@ public class TestSortingStress extends BaseTest {
         IList<Integer> top = Searcher.topKSort(100000, list);
         
         assertEquals(100000, top.size());
-        for (int i = 0; i < top.size(); i++) {
-            assertEquals(i, top.get(i));
+        for (int i = 0; i < 100000; i++) {
+            assertEquals(100000 - i - 1, top.remove());
         }          
     }
     
