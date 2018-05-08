@@ -47,73 +47,30 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         T result = this.peekMin();
         this.heap[0] = this.heap[this.size - 1];
         this.heap[this.size - 1] = null;
-              
         
-        boolean found = false;
         int index = 0;
         
-        
-        while (!found) {
-            int count = 1;
-            if (index < this.size / NUM_CHILDREN) { 
-                for (int i = 1; i <= NUM_CHILDREN; i++) {
-                    T temp = this.heap[NUM_CHILDREN * index + i];
-                    if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
-                        count = i;
-                    }
+        // percorlating down
+        while (index < this.size / NUM_CHILDREN || (index * NUM_CHILDREN + 1 <= this.size && this.heap[index * NUM_CHILDREN + 1] != null)) {
+            // while loop condition: first: the index is not leaf node, 
+            // or second: we have the most left child of the node at index is not null if that left child exists in heap array
+            int count = 1; // the second condition of while loop exists because of this integer!!! (can't change this tho)
+            for (int i = 1; i <= NUM_CHILDREN; i++) { // find child of the minimum value
+                T temp = this.heap[NUM_CHILDREN * index + i];
+                if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
+                    count = i;
                 }
-                if (this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) {
-                    T temp = this.heap[NUM_CHILDREN * index + count];
-                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
-                    this.heap[index] = temp;
-                    index = NUM_CHILDREN * index + count;
-                } else {
-                    found = true;
-                }
-            } else {
-                found = true;
+            }
+            
+            if (this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) { // swap if kid is babby
+                T temp = this.heap[NUM_CHILDREN * index + count];
+                this.heap[NUM_CHILDREN * index + count] = this.heap[index];
+                this.heap[index] = temp;
+                index = NUM_CHILDREN * index + count;
+            } else { // we done, we no more loopin
+                break;
             }
         }
-//        while (!found) {            
-//            int count = 0;
-//            if (index < (this.size - 2) / NUM_CHILDREN) { // general branch nodes
-//                for (int i = 1; i <= NUM_CHILDREN; i++) { //find the minimum child
-//                    T temp = this.heap[NUM_CHILDREN * index + i];
-//                    if (temp == null) {
-//                        break;
-//                    } else if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
-//                        count = i;
-//                    }
-//                }
-//                if (this.heap[index].compareTo(this.heap[NUM_CHILDREN * index + count]) > 0) { 
-//                    // compare with the minimum child node
-//                    T temp = this.heap[NUM_CHILDREN * index + count];
-//                    this.heap[NUM_CHILDREN * index + count] = this.heap[index];
-//                    this.heap[index] = temp;
-//                    index = NUM_CHILDREN * index + count;
-//                } else { // smaller than minimum children means that current node is smaller than its kids
-//                    found = true;
-//                }
-//            } else {
-//                // buggy: this else statement represents the leaf node, so nothing should not happen here, but why not 
-//                for (int i = 0; i < NUM_CHILDREN; i++) { // find the min child
-//                    T temp = this.heap[index + i];
-//                    if (temp == null) {
-//                        break;
-//                    } else if (temp != null && temp.compareTo(this.heap[index + count]) < 0) {
-//                        count = i;
-//                    }
-//                }             
-//                if (this.heap[index + count] != null && this.heap[index].compareTo(this.heap[ index + count]) > 0) {
-//                 // compare with the minimum child node
-//                    T temp = this.heap[index + count];
-//                    this.heap[index + count] = this.heap[index];
-//                    this.heap[index] = temp;
-//                } 
-//                found = true;
-//
-//            }
-//        }
         this.size--;
         return result;
     }
@@ -138,6 +95,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             }
             this.heap = temp;            
         }
+
         int index = this.size;
         this.heap[index] = item;
         
@@ -148,54 +106,6 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             this.heap[(index - 1) / NUM_CHILDREN] = temp;
             index = (index - 1) / NUM_CHILDREN;
         }
-//        boolean found = false;
-//        
-//        while (!found) { 
-//            if (NUM_CHILDREN * index >= this.size) { // BASE case
-//              for (int i = 1; i < NUM_CHILDREN; i++) {
-//                  if (index + i < this.size && this.heap[index].compareTo(this.heap[(index - 1)/ NUM_CHILDREN + i]) < 0) {
-//                      T minKid = this.heap[index];
-//                      this.heap[index] = this.heap[index / NUM_CHILDREN + 1];
-//                      this.heap[index / NUM_CHILDREN + 1] = minKid;
-//                  }
-//              }
-//                if (this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
-//                    T temp = this.heap[index / NUM_CHILDREN];
-//                    this.heap[index / NUM_CHILDREN] = this.heap[index];
-//                    this.heap[index] = temp;
-//                    index = index / NUM_CHILDREN;                   
-//                } else {
-//                    found = true;
-//                }
-//            } else {
-//                if (this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
-//                    T temp = this.heap[index / NUM_CHILDREN];
-//                    this.heap[index / NUM_CHILDREN] = this.heap[index];
-//                    this.heap[index] = temp;
-//                    index = index / NUM_CHILDREN;                   
-//                } else {
-//                    found = true;
-//                }  
-//            }
-//            if (this.size >= index / NUM_CHILDREN && this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
-//                T temp = this.heap[index / NUM_CHILDREN];
-//                this.heap[index / NUM_CHILDREN] = this.heap[index];
-//                this.heap[index] = temp;
-//                // int count = 1; 
-//                for (int i = 1; i < NUM_CHILDREN; i++) {
-//                    if ((index - 1)/ NUM_CHILDREN + i < this.size && this.heap[index].compareTo(this.heap[(index - 1)/ NUM_CHILDREN + i]) < 0) {
-//                        T minKid = this.heap[index];
-//                        this.heap[index] = this.heap[index / NUM_CHILDREN + 1];
-//                        this.heap[index / NUM_CHILDREN + 1] = minKid;
-//                    }
-//                }
-//                index = index / NUM_CHILDREN;
-//
-//            } else {
-//                found = true;
-//            }
-//            
-//        }
         this.size++;
     }
 
