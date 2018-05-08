@@ -108,7 +108,7 @@ public class TestSortingStress extends BaseTest {
         
         IList<Integer> top = Searcher.topKSort(1000, list);
         
-        for (int i = 0; i < top.size(); i++) {
+        for (int i = 0; i < 1000; i++) {
             assertEquals(i + list.size() - 1000, top.get(i));
         }
     }
@@ -123,8 +123,8 @@ public class TestSortingStress extends BaseTest {
         IList<Integer> top = Searcher.topKSort(100000, list);
         
         assertEquals(100000, top.size());
-        for (int i = 0; i < top.size(); i++) {
-            assertEquals(i, top.get(i));
+        for (int i = 0; i < 100000; i++) {
+            assertEquals(100000 - i - 1, top.remove());
         }          
     }
     
