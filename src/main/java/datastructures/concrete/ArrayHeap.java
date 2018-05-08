@@ -66,7 +66,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                 T temp = this.heap[NUM_CHILDREN * index + count];
                 this.heap[NUM_CHILDREN * index + count] = this.heap[index];
                 this.heap[index] = temp;
-                index = NUM_CHILDREN * index + count;
+                index = NUM_CHILDREN * index + count; // our "recursion"
             } else { // we done, we no more loopin
                 break;
             }
@@ -100,7 +100,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heap[index] = item;
         
         // percolating up 
-        while(index > 0 && this.heap[(index - 1) / NUM_CHILDREN].compareTo(this.heap[index]) > 0) { // parent exists in the case when index is greater than 0, 
+        while(index > 0 && this.heap[(index - 1) / NUM_CHILDREN].compareTo(this.heap[index]) > 0) { 
+            // parent exists in the case when index is greater than 0
+            // loop only happens when child is big
             T temp = this.heap[index];
             this.heap[index] = this.heap[(index - 1) / NUM_CHILDREN];
             this.heap[(index - 1) / NUM_CHILDREN] = temp;
