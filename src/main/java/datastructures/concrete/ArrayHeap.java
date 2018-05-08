@@ -135,24 +135,78 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             }
             this.heap = temp;            
         }
-        this.heap[this.size] = item;
-        boolean found = false;
         int index = this.size;
-        while (!found) {         
-            if (this.size >= index / NUM_CHILDREN && this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
-                T temp = this.heap[index / NUM_CHILDREN];
-                this.heap[index / NUM_CHILDREN] = this.heap[index];
-                this.heap[index] = temp;
-                index = index / NUM_CHILDREN;
-            } else {
-                found = true;
-            }
+        this.heap[index] = item;
+        
+        // percolating up 
+        while(index > 0 && this.heap[(index - 1) / NUM_CHILDREN].compareTo(this.heap[index]) > 0) { // parent exists in the case when index is greater than 0, 
+            T temp = this.heap[index];
+            this.heap[index] = this.heap[(index - 1) / NUM_CHILDREN];
+            this.heap[(index - 1) / NUM_CHILDREN] = temp;
+            index = (index - 1) / NUM_CHILDREN;
         }
+//        boolean found = false;
+//        
+//        while (!found) { 
+//            if (NUM_CHILDREN * index >= this.size) { // BASE case
+//              for (int i = 1; i < NUM_CHILDREN; i++) {
+//                  if (index + i < this.size && this.heap[index].compareTo(this.heap[(index - 1)/ NUM_CHILDREN + i]) < 0) {
+//                      T minKid = this.heap[index];
+//                      this.heap[index] = this.heap[index / NUM_CHILDREN + 1];
+//                      this.heap[index / NUM_CHILDREN + 1] = minKid;
+//                  }
+//              }
+//                if (this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
+//                    T temp = this.heap[index / NUM_CHILDREN];
+//                    this.heap[index / NUM_CHILDREN] = this.heap[index];
+//                    this.heap[index] = temp;
+//                    index = index / NUM_CHILDREN;                   
+//                } else {
+//                    found = true;
+//                }
+//            } else {
+//                if (this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
+//                    T temp = this.heap[index / NUM_CHILDREN];
+//                    this.heap[index / NUM_CHILDREN] = this.heap[index];
+//                    this.heap[index] = temp;
+//                    index = index / NUM_CHILDREN;                   
+//                } else {
+//                    found = true;
+//                }  
+//            }
+//            if (this.size >= index / NUM_CHILDREN && this.heap[index].compareTo(this.heap[index / NUM_CHILDREN]) < 0) {
+//                T temp = this.heap[index / NUM_CHILDREN];
+//                this.heap[index / NUM_CHILDREN] = this.heap[index];
+//                this.heap[index] = temp;
+//                // int count = 1; 
+//                for (int i = 1; i < NUM_CHILDREN; i++) {
+//                    if ((index - 1)/ NUM_CHILDREN + i < this.size && this.heap[index].compareTo(this.heap[(index - 1)/ NUM_CHILDREN + i]) < 0) {
+//                        T minKid = this.heap[index];
+//                        this.heap[index] = this.heap[index / NUM_CHILDREN + 1];
+//                        this.heap[index / NUM_CHILDREN + 1] = minKid;
+//                    }
+//                }
+//                index = index / NUM_CHILDREN;
+//
+//            } else {
+//                found = true;
+//            }
+//            
+//        }
         this.size++;
     }
 
     @Override
     public int size() {
         return this.size;
+    }
+    
+    public String toString() {
+        String result = "[";
+        for (int i = 0; i < this.size - 1; i++) {
+            result += this.heap[i] + ", "; 
+        }
+        result += this.heap[this.size-1] + "]";
+        return result; 
     }
 }

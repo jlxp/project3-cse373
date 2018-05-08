@@ -94,10 +94,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 100; i > 0; i--) {
             heap.insert(i);
+            System.out.println(heap.toString());
         }
         
+        System.out.println(heap.toString());
         for (int i = 1; i <= 100; i++) {
             assertEquals(i, heap.removeMin());
+            System.out.println(heap.toString());
         }
         assertTrue(heap.isEmpty());
     }
