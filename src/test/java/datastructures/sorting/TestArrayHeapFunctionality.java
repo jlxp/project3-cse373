@@ -65,13 +65,13 @@ public class TestArrayHeapFunctionality extends BaseTest {
         assertTrue(heap.isEmpty());
     }
     
-    @Test//(timeout=SECOND)
+    @Test(timeout=SECOND)
     public void testRemoveUpdatesSizeCorrectly() {
         IPriorityQueue<Integer> heap = this.makeInstance();
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             heap.insert(i);
         }
-        for (int i = 0; i < 100; i++) {
+        for (int i = 0; i < 50; i++) {
             int temp = heap.removeMin();
             assertEquals(i, temp);
             assertEquals(100 - i - 1, heap.size());

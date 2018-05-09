@@ -9,7 +9,7 @@ import misc.exceptions.EmptyContainerException;
 public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // See spec: you must implement a implement a 4-heap.
     private static final int NUM_CHILDREN = 4;
-    private static final int INIT_SIZE = NUM_CHILDREN * (NUM_CHILDREN + 1) + 1;
+    private static final int INIT_SIZE = 10;//NUM_CHILDREN * (NUM_CHILDREN + 1) + 1;
     
     // You MUST use this field to store the contents of your heap.
     // You may NOT rename this field: we will be inspecting it within
@@ -38,18 +38,21 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         // works, and should not modify it in any way.
         return (T[]) (new Comparable[size]);
     }
-
-    @Override
-    public T removeMin() {
+    
+    private void emptyError() {
         if (this.isEmpty()) {
             throw new EmptyContainerException("This list is empty");
         }
+    }
+    
+    @Override
+    public T removeMin() {
+        this.emptyError();
         T result = this.peekMin();
         this.heap[0] = this.heap[this.size - 1];
         this.heap[this.size - 1] = null;
-        
         int index = 0;
-        
+        this.size--;
         // percolating down
         while (index < this.size / NUM_CHILDREN || 
                 (index * NUM_CHILDREN + 1 <= this.size && this.heap[index * NUM_CHILDREN + 1] != null)) {
@@ -73,15 +76,12 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
                 break;
             }
         }
-        this.size--;
         return result;
     }
 
     @Override
     public T peekMin() {
-        if (this.isEmpty()) {
-            throw new EmptyContainerException("this list is empty");
-        }
+        this.emptyError();
         return this.heap[0];
     }
 
