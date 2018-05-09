@@ -94,13 +94,10 @@ public class TestArrayHeapFunctionality extends BaseTest {
         IPriorityQueue<Integer> heap = this.makeInstance();
         for (int i = 100; i > 0; i--) {
             heap.insert(i);
-            System.out.println(heap.toString());
         }
         
-        System.out.println(heap.toString());
         for (int i = 1; i <= 100; i++) {
-            System.out.println(heap.toString());
-            assertEquals(i, heap.removeMin());          
+            assertEquals(i, heap.removeMin());
         }
         assertTrue(heap.isEmpty());
     }
@@ -160,35 +157,12 @@ public class TestArrayHeapFunctionality extends BaseTest {
     public void testTwoChildren() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         heap.insert(3);
-        heap.insert(5);
         heap.insert(6);
+        heap.insert(5);
         
-        System.out.println(heap.toString());
         assertEquals(3, heap.removeMin());
-        System.out.println(heap.toString());
         assertEquals(5, heap.removeMin());
-        System.out.println(heap.toString());
         assertEquals(6, heap.removeMin());
-    }
-    
-    @Test(timeout=SECOND)
-    public void testTransfer() {
-        IPriorityQueue<Integer> heap = this.makeInstance();
-        IPriorityQueue<Integer> copy = this.makeInstance();
-        IPriorityQueue<Integer> temp = this.makeInstance();
-        for (int i = 100; i > 0; i--) {
-            heap.insert(i);
-            temp.insert(i);
-        }
-         
-        
-        for (int i = 0; i < 100; i++) {
-            copy.insert(heap.removeMin());            
-        }
-        
-        for (int i = 0; i < 100; i++) {
-            assertEquals(temp.removeMin(), copy.removeMin());
-        }
 
     }
 }
