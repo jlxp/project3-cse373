@@ -113,12 +113,12 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testRemoveError () {
+    public void testRemoveError() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         try {
             heap.removeMin();
             fail("Expected EmptyContainerException");
-        } catch (EmptyContainerException x) {
+        } catch (EmptyContainerException ex) {
             // do nothing
         }
     }
@@ -129,7 +129,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
         try {
             heap.peekMin();
             fail("Expected EmptyContainerException");
-        } catch (EmptyContainerException x) {
+        } catch (EmptyContainerException ex) {
             // do nothing
         }
     }
@@ -140,7 +140,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
         try {
             heap.insert(null);
             fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException i) {
+        } catch (IllegalArgumentException ill) {
             // do nothing
         }
     }

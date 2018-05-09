@@ -35,7 +35,7 @@ public class Searcher {
         // - You should implement this method by using your ArrayHeap for the sake of
         //   efficiency.
         if (k < 0) {
-            throw new IllegalArgumentException("Not a valid numbr of elements");
+            throw new IllegalArgumentException("Not a valid number of elements");
         }
                 
         IPriorityQueue<T> result = new ArrayHeap<>();
@@ -43,15 +43,15 @@ public class Searcher {
         for (int i = 0; i < Math.min(k, input.size()); i++) {
             T temp = itty.next();
             if (temp == null) {
-                throw new IllegalArgumentException("null null");
+                throw new IllegalArgumentException("input item cannot be null");
             }
             result.insert(temp);
         }
         if (!result.isEmpty() && Math.min(k, input.size()) == k) {
-            while(itty.hasNext()) {
+            while (itty.hasNext()) {
                 T temp = itty.next();
                 if (temp == null) {
-                    throw new IllegalArgumentException("null null");
+                    throw new IllegalArgumentException("input item cannot be null");
                 }
                 if (temp.compareTo(result.peekMin()) > 0) {
                     result.removeMin();
@@ -60,7 +60,7 @@ public class Searcher {
             }
         }
         IList<T> resultList = new DoubleLinkedList<>();
-        while(!result.isEmpty()) {
+        while (!result.isEmpty()) {
             resultList.add(result.removeMin());            
         }
         return resultList;

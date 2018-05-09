@@ -15,11 +15,11 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // You may NOT rename this field: we will be inspecting it within
     // our private tests.
     private T[] heap;
-    private int size;
+    private int heapSize;
     // Feel free to add more fields and constants.
 
     public ArrayHeap() {
-        this.size = 0;
+        this.heapSize = 0;
         this.heap = makeArrayOfT(INIT_SIZE);
     }
 
@@ -49,17 +49,14 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     public T removeMin() {
         this.emptyError();
         T result = this.peekMin();
-        this.heap[0] = this.heap[this.size - 1];
-        this.heap[this.size - 1] = null;
+        this.heap[0] = this.heap[this.heapSize - 1];
+        this.heap[this.heapSize - 1] = null;
         int index = 0;
         
-        // percolating down
-        while (index < this.size / NUM_CHILDREN || 
-                (index * NUM_CHILDREN + 1 <= this.size && this.heap[index * NUM_CHILDREN + 1] != null)) {
-            // while loop condition: first: the index is not leaf node, 
-            // or second: we have the most left child of the node at index is not null if that left child exists in heap array
-            int count = 1; // the second condition of while loop exists because of this integer!!! (can't change this tho)
-            for (int i = 1; i <= NUM_CHILDREN; i++) { // find child of the minimum value
+        while (index < this.heapSize / NUM_CHILDREN || 
+                (index * NUM_CHILDREN + 1 <= this.heapSize && this.heap[index * NUM_CHILDREN + 1] != null)) {
+            int count = 1;
+            for (int i = 1; i <= NUM_CHILDREN; i++) {
                 T temp = this.heap[NUM_CHILDREN * index + i];
                 if (temp != null && temp.compareTo(this.heap[NUM_CHILDREN * index + count]) < 0) {
                     count = i;
@@ -67,16 +64,16 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
             }
             
             int minIndex = NUM_CHILDREN * index + count;
-            if (this.heap[index].compareTo(this.heap[minIndex]) > 0) { // swap if kid is babby
+            if (this.heap[index].compareTo(this.heap[minIndex]) > 0) {
                 T temp = this.heap[minIndex];
                 this.heap[minIndex] = this.heap[index];
                 this.heap[index] = temp;
-                index = minIndex; // our "recursion"
-            } else { // we done, we no more loopin
+                index = minIndex;
+            } else {
                 break;
             }
         }
-        this.size--;
+        this.heapSize--;
         return result;
     }
 
@@ -91,42 +88,39 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null");
         }
-        if (this.size >= this.heap.length) { // resize
+        if (this.heapSize >= this.heap.length) { // resize
             T[] temp = this.makeArrayOfT(this.heap.length * 2);
-            for (int i = 0; i < this.size; i++) {
+            for (int i = 0; i < this.heapSize; i++) {
                 temp[i] = this.heap[i];
             }
             this.heap = temp;            
         }
 
-        int index = this.size;
+        int index = this.heapSize;
         this.heap[index] = item;
         int parent = (index - 1) / NUM_CHILDREN;
-        // percolating up 
-        while(index > 0 && this.heap[parent].compareTo(this.heap[index]) > 0) { 
-            // parent exists in the case when index is greater than 0
-            // loop only happens when child is big
+        while (index > 0 && this.heap[parent].compareTo(this.heap[index]) > 0) {
             T temp = this.heap[index];
             this.heap[index] = this.heap[parent];
             this.heap[parent] = temp;
             index = parent;
             parent = (index - 1) / NUM_CHILDREN;
         }
-        this.size++;
+        this.heapSize++;
     }
 
     @Override
     public int size() {
-        return this.size;
+        return this.heapSize;
     }
     
     @Override
     public String toString() {
         String result = "[";
-        for (int i = 0; i < this.size - 1; i++) {
+        for (int i = 0; i < this.heapSize - 1; i++) {
             result += this.heap[i] + ", "; 
         }
-        result += this.heap[this.size-1] + "]";
+        result += this.heap[this.heapSize-1] + "]";
         return result; 
     }
 }
