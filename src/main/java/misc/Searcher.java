@@ -1,5 +1,7 @@
 package misc;
 
+import java.util.Iterator;
+
 import datastructures.concrete.ArrayHeap;
 import datastructures.concrete.DoubleLinkedList;
 import datastructures.interfaces.IList;
@@ -37,37 +39,31 @@ public class Searcher {
         }
                 
         IPriorityQueue<T> result = new ArrayHeap<>();
-        
-//        if (k >= input.size()) {
-//            for (int i = 0; i < input.size(); i++) {
-//                T temp = input.get(i);
-//                if (temp == null) {
-//                    throw new IllegalArgumentException("null null");
-//                }
-//                result.insert(temp);
-//            }
-//        } else if (k > 0) {
-            for (int i = 0; i < Math.min(k, input.size()); i++) {
-                T temp = input.get(i);
+        Iterator<T> itty = input.iterator();
+        for (int i = 0; i < Math.min(k, input.size()); i++) {
+            //T temp = input.remove();//input.get(i);
+            //input.insert(0, temp);
+            T temp = itty.next();
+            if (temp == null) {
+                throw new IllegalArgumentException("null null");
+            }
+            result.insert(temp);
+        }
+        if (!result.isEmpty() && Math.min(k, input.size()) == k) {
+            //for (int i = k; i < input.size(); i++) {
+                //T temp = input.remove();//input.get(i);
+                //input.insert(0, temp);
+            while(itty.hasNext()) {
+                T temp = itty.next();
                 if (temp == null) {
                     throw new IllegalArgumentException("null null");
                 }
-                result.insert(temp);
-            }
-            if (!result.isEmpty() && Math.min(k, input.size()) == k) {
-                for (int i = k; i < input.size(); i++) {
-                    T temp = input.get(i);
-                    if (temp == null) {
-                        throw new IllegalArgumentException("null null");
-                    }
-                    if (temp.compareTo(result.peekMin()) > 0) {
-                        result.removeMin();
-                        result.insert(temp);
-                    }
+                if (temp.compareTo(result.peekMin()) > 0) {
+                    result.removeMin();
+                    result.insert(temp);
                 }
             }
-//        }
-        
+        }
         IList<T> resultList = new DoubleLinkedList<>();
         while(!result.isEmpty()) {
             resultList.add(result.removeMin());            
