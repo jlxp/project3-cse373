@@ -36,8 +36,71 @@ public class Searcher {
             throw new IllegalArgumentException("Not a valid numbr of elements");
         }
                 
-        IPriorityQueue<T> result = new ArrayHeap<>();
+        IPriorityQueue<T> maxHeap = new ArrayHeap<>();
+        IList<T> result = new DoubleLinkedList<>();
         
+        if (k >= input.size()) {
+            result = input; 
+            for (int i = 0; i < input.size(); i++) {
+                T temp = input.get(i); 
+                if (temp == null) {
+                    throw new IllegalArgumentException("null null");
+                }
+                maxHeap.insert(temp);
+            }
+            for (int i = 0; i < input.size(); i++) {
+                result.add(maxHeap.removeMin());
+            }
+        } else if (k > 0) {
+            result = input; 
+            for (int i = 0; i < input.size(); i++) {
+                T temp = input.get(i); 
+                if (temp == null) {
+                    throw new IllegalArgumentException("null null");
+                }
+                maxHeap.insert(temp);
+            }
+            for (int i = 0; i < (input.size() - k); i++) {
+                maxHeap.removeMin();
+            }
+            
+            for (int i = 0; i < k; i++) {
+                result.add(maxHeap.removeMin());
+            }          
+        }
+        
+        return result; 
+
+        // Old Version 1 
+//        if (k >= input.size()) {
+//            for (int i = 0; i < input.size(); i++) {
+//                T temp = input.get(i); 
+//                if (temp == null ) {
+//                    throw new IllegalArgumentException("null null");
+//                }
+//                maxHeap.insert(temp);
+//            }
+//        } else if (k > 0) {
+//            for (int i = 0; i < k; i++) {
+//                T temp = input.get(i); 
+//                if (temp == null ) {
+//                    throw new IllegalArgumentException("null null");
+//                }
+//                maxHeap.insert(temp);
+//            }
+//            for (int i = k; i < input.size(); i++) {
+//                T temp = input.get(i); 
+//                if (temp == null) {
+//                    throw new IllegalArgumentException("null null");
+//                }
+//                if (temp.compareTo(maxHeap.peekMin()) > 0) {
+//                    maxHeap.removeMin();
+//                    maxHeap.insert(temp);
+//                }               
+//            }
+//        }
+        
+        // Old version 2
 //        if (k >= input.size()) {
 //            for (int i = 0; i < input.size(); i++) {
 //                T temp = input.get(i);
@@ -47,31 +110,31 @@ public class Searcher {
 //                result.insert(temp);
 //            }
 //        } else if (k > 0) {
-            for (int i = 0; i < Math.min(k, input.size()); i++) {
-                T temp = input.get(i);
-                if (temp == null) {
-                    throw new IllegalArgumentException("null null");
-                }
-                result.insert(temp);
-            }
-            if (!result.isEmpty() && Math.min(k, input.size()) == k) {
-                for (int i = k; i < input.size(); i++) {
-                    T temp = input.get(i);
-                    if (temp == null) {
-                        throw new IllegalArgumentException("null null");
-                    }
-                    if (temp.compareTo(result.peekMin()) > 0) {
-                        result.removeMin();
-                        result.insert(temp);
-                    }
-                }
-            }
+//            for (int i = 0; i < Math.min(k, input.size()); i++) {
+//                T temp = input.get(i);
+//                if (temp == null) {
+//                    throw new IllegalArgumentException("null null");
+//                }
+//                result.insert(temp);
+//            }
+//            if (!result.isEmpty() && Math.min(k, input.size()) == k) {
+//                for (int i = k; i < input.size(); i++) {
+//                    T temp = input.get(i);
+//                    if (temp == null) {
+//                        throw new IllegalArgumentException("null null");
+//                    }
+//                    if (temp.compareTo(result.peekMin()) > 0) {
+//                        result.removeMin();
+//                        result.insert(temp);
+//                    }
+//                }
+//            }
 //        }
         
-        IList<T> resultList = new DoubleLinkedList<>();
-        while(!result.isEmpty()) {
-            resultList.add(result.removeMin());            
-        }
-        return resultList;
+        // IF YOU WANNA USE OLD VERSION THEN UNCOMMENT THOSE
+//        while(!maxHeap.isEmpty()) {
+//            result.add(maxHeap.removeMin());            
+//        }
+//        return result;
     }
 }

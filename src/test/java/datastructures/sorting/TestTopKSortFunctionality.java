@@ -132,5 +132,47 @@ public class TestTopKSortFunctionality extends BaseTest {
         assertTrue(top.isEmpty());
     }
     
+    @Test(timeout=SECOND)
+    public void testBackwardBigK() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 100; i > 0; i--) {
+            list.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(100, list);
+        
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(i + 1, top.get(i));
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testBackward() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        for (int i = 100; i > 0; i--) {
+            list.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(20, list);
+        
+        for (int i = 0; i < top.size(); i++) {
+            assertEquals(81 + i, top.get(i));
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testInput() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        IList<Integer> list2 = new DoubleLinkedList<>();
+        for (int i = 100; i > 0; i--) {
+            list.add(i);
+            list2.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(20, list);
+        
+        assertEquals(list.size(), list2.size());
+        
+    }
     
 }

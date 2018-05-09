@@ -68,10 +68,10 @@ public class TestArrayHeapFunctionality extends BaseTest {
     @Test(timeout=SECOND)
     public void testRemoveUpdatesSizeCorrectly() {
         IPriorityQueue<Integer> heap = this.makeInstance();
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             heap.insert(i);
         }
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 100; i++) {
             int temp = heap.removeMin();
             assertEquals(i, temp);
             assertEquals(100 - i - 1, heap.size());
@@ -163,6 +163,27 @@ public class TestArrayHeapFunctionality extends BaseTest {
         assertEquals(3, heap.removeMin());
         assertEquals(5, heap.removeMin());
         assertEquals(6, heap.removeMin());
+
+    }
+    
+    @Test(timeout=SECOND)
+    public void testTransfer() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        IPriorityQueue<Integer> copy = this.makeInstance();
+        IPriorityQueue<Integer> temp = this.makeInstance();
+        for (int i = 100; i > 0; i--) {
+            heap.insert(i);
+            temp.insert(i);
+        }
+         
+        
+        for (int i = 0; i < 100; i++) {
+            copy.insert(heap.removeMin());            
+        }
+        
+        for (int i = 0; i < 100; i++) {
+            assertEquals(temp.removeMin(), copy.removeMin());
+        }
 
     }
 }
