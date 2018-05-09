@@ -40,7 +40,6 @@ public class Searcher {
         IList<T> result = new DoubleLinkedList<>();
         
         if (k >= input.size()) {
-            result = input; 
             for (int i = 0; i < input.size(); i++) {
                 T temp = input.get(i); 
                 if (temp == null) {
@@ -52,7 +51,6 @@ public class Searcher {
                 result.add(maxHeap.removeMin());
             }
         } else if (k > 0) {
-            result = input; 
             for (int i = 0; i < input.size(); i++) {
                 T temp = input.get(i); 
                 if (temp == null) {
