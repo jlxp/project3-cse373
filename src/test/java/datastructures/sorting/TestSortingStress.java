@@ -20,7 +20,7 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10*SECOND)
     public void testHeapManyElementsInsert() {
         IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
             assertEquals(0, heap.peekMin());
@@ -30,13 +30,13 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10*SECOND)
     public void testHeapInsertAndRemoveMany() { // bug 80464 is found in index 80511
         IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             heap.insert(i);
             assertEquals(i + 1, heap.size());
         }
         
-        for (int i = 0; i < 100000; i++) {
-            assertEquals(100000 - i, heap.size());
+        for (int i = 0; i < 200000; i++) {
+            assertEquals(200000 - i, heap.size());
             int temp = heap.removeMin();
             assertEquals(i, temp);
         }
@@ -49,14 +49,14 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10*SECOND)
     public void testHeapInsertAndRemoveSameElement() {
         IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             heap.insert(1000);
             assertEquals(i + 1, heap.size());
         }
         
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             assertEquals(1000, heap.removeMin());
-            assertEquals(100000 - i - 1, heap.size());
+            assertEquals(200000 - i - 1, heap.size());
         }
         
     }
@@ -64,12 +64,12 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10*SECOND)
     public void testHeapBackward() {
         IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
-        for (int i = 0; i < 100000; i++) {
-            heap.insert(100000 - i - 1);
+        for (int i = 0; i < 200000; i++) {
+            heap.insert(200000 - i - 1);
             assertEquals(i + 1, heap.size());
         }
         
-        for (int i = 0; i < 20; i++) { 
+        for (int i = 0; i < 200000; i++) { 
             int temp = heap.removeMin();
             assertEquals(i, temp);
         }
@@ -78,42 +78,57 @@ public class TestSortingStress extends BaseTest {
     @Test(timeout=10*SECOND)
     public void testSearchManyElements() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             list.add(i);
         }
         
         IList<Integer> top = Searcher.topKSort(1000, list);
         
-        for (int i = 0; i < top.size(); i++) {
-            assertEquals(i + list.size() - 1000, top.get(i));
+        for (int i = 0; i < 1000; i++) {
+            assertEquals(200000 - 1 - i, top.remove());
         }
     }
     
     @Test(timeout=10*SECOND)
     public void testSearchBigK() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             list.add(i);
         }
         
-        IList<Integer> top = Searcher.topKSort(100000, list);
+        IList<Integer> top = Searcher.topKSort(200000, list);
         
-        assertEquals(100000, top.size());
-        for (int i = 0; i < top.size(); i++) {
-            assertEquals(i, top.get(i));
+        assertEquals(200000, top.size());
+        for (int i = 0; i < 200000; i++) {
+            assertEquals(200000 - 1 - i, top.remove());
         }          
     }
     
     @Test(timeout=10*SECOND)
     public void testSearchZeroK() {
         IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 100000; i++) {
+        for (int i = 0; i < 200000; i++) {
             list.add(i);
         }
         
         IList<Integer> top = Searcher.topKSort(0, list);
         
         assertTrue(top.isEmpty());          
+    }
+    
+    @Test(timeout=10*SECOND)
+    public void testInput() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        IList<Integer> list2 = new DoubleLinkedList<>();
+
+        for (int i = 0; i < 200000; i++) {
+            list.add(i);
+            list2.add(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(1000, list);
+        
+        assertEquals(list.size(), list2.size());          
     }
     
 }
