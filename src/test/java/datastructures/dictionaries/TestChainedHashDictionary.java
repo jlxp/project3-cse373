@@ -1,11 +1,14 @@
 package datastructures.dictionaries;
 
+import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import org.junit.Test;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.Iterator;
 
 public class TestChainedHashDictionary extends TestDictionary {
     protected <K, V> IDictionary<K, V> newDictionary() {
@@ -91,6 +94,33 @@ public class TestChainedHashDictionary extends TestDictionary {
     
     @Test(timeout=10*SECOND)
     public void integrationTest() {
+        IDictionary<Wrapper<String>, Integer> dict = this.newDictionary();
+
+        Wrapper<String> key1 = new Wrapper<>("foo", 0);
+        Wrapper<String> key2 = new Wrapper<>("bar", 1);
+        Wrapper<String> key3 = new Wrapper<>("baz", 1);
+        Wrapper<String> key4 = new Wrapper<>("qux", 2);
+        Wrapper<String> key5 = new Wrapper<>("foo", 1);
+        Wrapper<String> key6 = new Wrapper<>("bar", 2);
         
+        dict.put(key1, 0);
+        dict.put(key2, 1);
+        dict.put(key3, 2);
+        dict.put(key4, 3);
+        dict.put(key5, 4);
+        dict.put(key6, 5);
+        
+        dict.remove(key6);
+        dict.remove(key4);
+        
+        Iterator<KVPair<Wrapper<String>, Integer>> iter = dict.iterator();
+        
+        assertEquals(0, iter.next().getValue());
+        assertEquals(1, iter.next().getValue());
+        assertEquals(2, iter.next().getValue());
+        assertEquals(4, iter.next().getValue());
+
+        
+
     }
 }
