@@ -111,7 +111,12 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
         
         int index = this.getIndex(key, this.chains.length);                
         this.length--;
-        return (V) this.chains[index].remove(key);
+        return this.chains[index].remove(key);
+//        V result = this.chains[index].remove(key);
+//        if (this.chains[index].isEmpty()) {
+//            this.chains[index] = null;
+//        }
+//        return (V) result;
     }
 
     /*
@@ -220,7 +225,8 @@ public class ChainedHashDictionary<K, V> implements IDictionary<K, V> {
                 this.next = this.currIter.next();
             } else {
                 this.index++;
-                while (this.index < this.chains.length && chains[this.index] == null) {
+                while (this.index < this.chains.length && 
+                        (this.chains[this.index] == null || this.chains[this.index].isEmpty())) {
                     this.index++;
                 }
                 if (this.index != this.chains.length) {
