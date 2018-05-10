@@ -88,4 +88,9 @@ public class TestChainedHashDictionary extends TestDictionary {
             dict.remove(i);
         }
     }
+    
+    @Test(timeout=10*SECOND)
+    public void integrationTest() {
+        
+    }
 }

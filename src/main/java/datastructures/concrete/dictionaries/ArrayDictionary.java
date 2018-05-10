@@ -40,11 +40,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
     public V get(K key) {
         int index = this.indexOf(key);
         this.checkKey(index);
-        if (this.pairs[index].key == key || (this.pairs[index].key != null &&
-                this.pairs[index].key.equals(key))) {
-            return (V) this.pairs[index].value;
-        }
-        return null; 
+        return (V) this.pairs[index].value;
     }
     
     /*
@@ -78,10 +74,7 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
             }
             this.size++;
         } else {
-            if (this.pairs[index].key == key || (this.pairs[index].key != null && 
-                    this.pairs[index].key.equals(key))) {
-                this.pairs[index] = new Pair<>(key, value);
-            }
+            this.pairs[index] = new Pair<>(key, value);
         }
     }
 
@@ -95,21 +88,13 @@ public class ArrayDictionary<K, V> implements IDictionary<K, V> {
         int index = this.indexOf(key);
         this.checkKey(index);
         V temp = null;
-        if (this.pairs[this.size - 1].key == key || (this.pairs[this.size - 1].key != null && 
-                this.pairs[this.size - 1].key.equals(key))) {
+        if (index == this.size - 1) {
             temp = this.pairs[this.size - 1].value;
             this.pairs[this.size - 1] = null;
-            this.size--;
-            return(V) temp;
         } else {
-            if (this.pairs[index].key == key || (this.pairs[index].key != null && 
-                    this.pairs[index].key.equals(key))) {
-                temp = this.pairs[index].value;
-                this.pairs[index] = this.pairs[this.size - 1];
-                this.pairs[this.size - 1] = null;
-                this.size--;
-                return (V) temp;
-            }
+            temp = this.pairs[index].value;
+            this.pairs[index] = this.pairs[this.size - 1];
+            this.pairs[this.size - 1] = null;
         }
         this.size--;
         return (V) temp;
