@@ -171,11 +171,15 @@ public class TestArrayHeapFunctionality extends BaseTest {
         IPriorityQueue<Integer> heap = this.makeInstance();
         IPriorityQueue<Integer> copy = this.makeInstance();
         IPriorityQueue<Integer> temp = this.makeInstance();
-        for (int i = 100; i > 0; i--) {
+        for (int i = 50; i > 0; i--) {
             heap.insert(i);
             temp.insert(i);
         }
-         
+        
+        for (int i = 50; i < 100; i++) {
+            heap.insert(i);
+            temp.insert(i);
+        }
         
         for (int i = 0; i < 100; i++) {
             copy.insert(heap.removeMin());            
@@ -184,6 +188,45 @@ public class TestArrayHeapFunctionality extends BaseTest {
         for (int i = 0; i < 100; i++) {
             assertEquals(temp.removeMin(), copy.removeMin());
         }
-
+        assertTrue(temp.isEmpty());
+        assertTrue(copy.isEmpty());
+    }
+    
+    @Test(timeout=SECOND)
+    public void testRandom() {
+        IPriorityQueue<Double> heap = this.makeInstance();
+        IPriorityQueue<Double> copy = this.makeInstance();
+        for (int i = 0; i < 100; i++) {
+            double num = Math.random();
+            heap.insert(num);
+            copy.insert(num);
+        }
+        while (!heap.isEmpty()) {
+            assertEquals(copy.removeMin(), heap.removeMin());
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testDoubles() {
+        IPriorityQueue<Double> heap = this.makeInstance();
+        for (int i = 20; i < 200; i++) {
+            heap.insert(i / 10.1);
+        }
+        assertEquals(200 - 20, heap.size());
+        for (int i = 20; i < 200; i++) {
+            assertEquals(i / 10.1, heap.removeMin());
+        }
+    }
+    
+    @Test(timeout=SECOND)
+    public void testNegatives() {
+        IPriorityQueue<Integer> heap = this.makeInstance();
+        for (int i = 0; i > -100; i--) {
+            heap.insert(i);
+        }
+        for (int i = -99; i <= 0; i++) {
+            assertEquals(i, heap.removeMin());
+        }
+        assertTrue(heap.isEmpty());
     }
 }

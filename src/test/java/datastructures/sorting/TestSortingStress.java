@@ -76,6 +76,21 @@ public class TestSortingStress extends BaseTest {
     }
     
     @Test(timeout=10*SECOND)
+    public void testRandomDouble() {
+        IPriorityQueue<Double> heap = new ArrayHeap<>();
+        IPriorityQueue<Double> copy = new ArrayHeap<>();
+        for (int i = 0; i < 200000; i++) {
+            double num = Math.random() - i - 1;
+            heap.insert(num);
+            copy.insert(num);
+        }
+        
+        for (int i = 0; i < 200000; i++) {
+            assertEquals(copy.removeMin(), heap.removeMin());
+        }
+    }
+    
+    @Test(timeout=10*SECOND)
     public void testSearchManyElements() {
         IList<Integer> list = new DoubleLinkedList<>();
         for (int i = 0; i < 200000; i++) {
