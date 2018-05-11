@@ -110,10 +110,14 @@ public class TestArrayHeapFunctionality extends BaseTest {
             assertEquals(2, heap.peekMin());
             assertEquals(i + 1, heap.size());
         }
+        
+        for (int i = 0; i < 100; i++) {
+            assertEquals(2, heap.removeMin());
+        }
     }
     
     @Test(timeout=SECOND)
-    public void testRemoveError() {
+    public void testRemoveEmptyHeap() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         try {
             heap.removeMin();
@@ -124,7 +128,7 @@ public class TestArrayHeapFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testPeekError() {
+    public void testPeekEmptyHeap() {
         IPriorityQueue<Integer> heap = this.makeInstance();
         try {
             heap.peekMin();
@@ -229,4 +233,30 @@ public class TestArrayHeapFunctionality extends BaseTest {
         }
         assertTrue(heap.isEmpty());
     }
+    
+    @Test(timeout=SECOND)
+    public void testStrings() {
+        IPriorityQueue<String> heap = this.makeInstance();
+        heap.insert("hello ");
+        heap.insert("hello");
+        
+        assertEquals("hello", heap.removeMin());
+        assertEquals("hello ", heap.removeMin());
+        
+        heap.insert("aa");
+        heap.insert("AA");
+        
+        assertEquals("AA", heap.removeMin());
+        assertEquals("aa", heap.removeMin());
+        
+        String item1 = "abcde";
+        String item2 = item1 + "";
+        heap.insert(item1);
+        heap.insert(item2);
+        
+        assertEquals(item1, heap.removeMin());
+        assertEquals(item2, heap.removeMin());
+    }
+    
+    
 }
