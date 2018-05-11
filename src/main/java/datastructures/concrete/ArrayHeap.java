@@ -39,12 +39,19 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         return (T[]) (new Comparable[size]);
     }
     
+    /**
+     * Throws and EmptycontainerException if the heap is empty
+     */
     private void emptyError() {
         if (this.isEmpty()) {
             throw new EmptyContainerException("This list is empty");
         }
     }
     
+    /**
+     * Removes and returns the minimum item in the heap. Throws and EmptyContainerException
+     * if the heap is empty
+     */
     @Override
     public T removeMin() {
         this.emptyError();
@@ -76,13 +83,21 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heapSize--;
         return result;
     }
-
+    
+    /**
+     * Returns the minimum value in the heap.
+     * Throws EmptyContainerException if the heap is empty.
+     */
     @Override
     public T peekMin() {
         this.emptyError();
         return this.heap[0];
     }
 
+    /**
+     * Inserts the item passed in as a parameter into the heap following standard heap
+     * requirements. Throws an IllegalArguementException if the item passed in is null.
+     */
     @Override
     public void insert(T item) {
         if (item == null) {
@@ -109,6 +124,9 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         this.heapSize++;
     }
 
+    /**
+     * Returns the Current size of the heap.
+     */
     @Override
     public int size() {
         return this.heapSize;
