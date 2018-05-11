@@ -39,17 +39,17 @@ public class Searcher {
         }
                 
         IPriorityQueue<T> result = new ArrayHeap<>();
-        Iterator<T> itty = input.iterator();
+        Iterator<T> iter = input.iterator();
         for (int i = 0; i < Math.min(k, input.size()); i++) {
-            T temp = itty.next();
+            T temp = iter.next();
             if (temp == null) {
                 throw new IllegalArgumentException("input item cannot be null");
             }
             result.insert(temp);
         }
         if (!result.isEmpty() && Math.min(k, input.size()) == k) {
-            while (itty.hasNext()) {
-                T temp = itty.next();
+            while (iter.hasNext()) {
+                T temp = iter.next();
                 if (temp == null) {
                     throw new IllegalArgumentException("input item cannot be null");
                 }
@@ -59,6 +59,7 @@ public class Searcher {
                 }
             }
         }
+        
         IList<T> resultList = new DoubleLinkedList<>();
         while (!result.isEmpty()) {
             resultList.add(result.removeMin());            

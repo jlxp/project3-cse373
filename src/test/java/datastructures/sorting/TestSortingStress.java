@@ -146,4 +146,26 @@ public class TestSortingStress extends BaseTest {
         assertEquals(list.size(), list2.size());          
     }
     
+    @Test(timeout=10*SECOND)
+    public void testSortAndHeap() {
+        IList<Integer> list = new DoubleLinkedList<>();
+        IPriorityQueue<Integer> heap = new ArrayHeap<>(); 
+
+        for (int i = 0; i < 200000; i++) {
+            list.add(i);
+            
+        }
+        
+        for (int i = 200000; i < 210000; i++) {
+            list.add(i);
+            heap.insert(i);
+        }
+        
+        IList<Integer> top = Searcher.topKSort(10000, list);
+        
+        for (int i = 0; i < 10000; i++) {
+            assertEquals(top.get(i), heap.removeMin()); 
+        }
+    }
+    
 }
