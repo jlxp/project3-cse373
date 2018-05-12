@@ -1,5 +1,6 @@
 package search.analyzers;
 
+import datastructures.concrete.ChainedHashSet;
 import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
@@ -58,27 +59,28 @@ public class TfIdfAnalyzer {
      * in every single document to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        IDictionary<String, Double> result = new ChainedHashDictionary<>();
+        IDictionary<String, Double> result = new ChainedHashDictionary<>();       
         IDictionary<String, Integer> counter = new ChainedHashDictionary<>();
-        for (Webpage page : pages) {
-            IDictionary<String, Double> temp = this.computeTfScores(page.getWords());
-            for (KVPair<String, Double> wordPair : temp) {
-                if(!counter.containsKey(wordPair.getKey())) {
-                    counter.put(wordPair.getKey(), 0);
+        for (Webpage page : pages) { 
+            ISet<String> temp = new ChainedHashSet<>();
+            for (String word : page.getWords()) {
+                if(!temp.contains(word)) {
+                    temp.add(word);
+                }   
+            }  
+            for (String word : temp) {
+                if(!counter.containsKey(word)) {
+                    counter.put(word, 0);
                 }
-                counter.put(wordPair.getKey(), counter.get(wordPair.getKey()) + 1);
+                counter.put(word, counter.get(word) + 1);
             }
-            
-            
         }
+        
         for (KVPair<String, Integer> wordPair : counter) {
             double idfTemp = 0.0;
             idfTemp += wordPair.getValue();
-            System.out.println("word: " + wordPair.getKey() + ", double: " + idfTemp);
             idfTemp /= pages.size();
-            System.out.println(idfTemp);
             idfTemp = Math.log(idfTemp);
-            System.out.println(idfTemp);
             result.put(wordPair.getKey(), Math.abs(idfTemp));
         }
         return result;
