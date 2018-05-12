@@ -1,5 +1,7 @@
 package search.analyzers;
 
+import datastructures.concrete.KVPair;
+import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
@@ -35,8 +37,8 @@ public class TfIdfAnalyzer {
         // You should uncomment these lines when you're ready to begin working
         // on this class.
 
-        //this.idfScores = this.computeIdfScores(webpages);
-        //this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.idfScores = this.computeIdfScores(webpages);
+        this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -57,7 +59,24 @@ public class TfIdfAnalyzer {
      * in every single document to their IDF score.
      */
     private IDictionary<String, Double> computeIdfScores(ISet<Webpage> pages) {
-        throw new NotYetImplementedException();
+        IDictionary<String, Double> result = new ChainedHashDictionary<>();
+        IDictionary<String, Integer> counter = new ChainedHashDictionary<>();
+        for (Webpage page : pages) {
+            for (String word : page.getWords()) {
+                if (!counter.containsKey(word)) {
+                    counter.put(word, 0);
+                }
+                counter.put(word, counter.get(word) + 1);
+            }
+        }
+        for (KVPair<String, Integer> word : counter) {
+            double idfTemp = 0.0;
+            idfTemp += word.getValue();
+            idfTemp /= pages.size();
+            idfTemp = Math.log(idfTemp);
+            result.put(word.getKey(), idfTemp);
+        }
+        return result;
     }
 
     /**
@@ -67,7 +86,21 @@ public class TfIdfAnalyzer {
      * The input list represents the words contained within a single document.
      */
     private IDictionary<String, Double> computeTfScores(IList<String> words) {
-        throw new NotYetImplementedException();
+        IDictionary<String, Double> result = new ChainedHashDictionary<>();
+        IDictionary<String, Integer> counter = new ChainedHashDictionary<>();
+        for (String word : words) {
+            if (!counter.containsKey(word)) {
+                counter.put(word, 0);
+            }
+            counter.put(word, counter.get(word) + 1);
+        }
+        for (KVPair<String, Integer> word : counter) {
+            double tfTemp = 0.0;
+            tfTemp += word.getValue();
+            tfTemp /= words.size();
+            result.put(word.getKey(), tfTemp);
+        }
+        return result;
     }
 
     /**
@@ -76,7 +109,18 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> computeAllDocumentTfIdfVectors(ISet<Webpage> pages) {
         // Hint: this method should use the idfScores field and
         // call the computeTfScores(...) method.
-        throw new NotYetImplementedException();
+        IDictionary<URI, IDictionary<String, Double>> result = new ChainedHashDictionary<>();
+        for (Webpage page : pages) {
+            IDictionary<String, Double> tfScores = this.computeTfScores(page.getWords());
+            IDictionary<String, Double> computed = new ChainedHashDictionary<>();
+            for (KVPair<String, Double> wordPair : tfScores) {
+                double temp = 0.0;
+                temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
+                computed.put(wordPair.getKey(), temp);
+            }
+            result.put(page.getUri(), computed);
+        }
+        return result;
     }
 
     /**
@@ -94,6 +138,38 @@ public class TfIdfAnalyzer {
         //    Add a third field containing that information.
         //
         // 2. See if you can combine or merge one or more loops.
+        IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
+        IDictionary<String, Double> tfScores = this.computeTfScores(query);
+        IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
+        for (KVPair<String, Double> wordPair : tfScores) {
+            double temp = 0.0;
+            if (this.idfScores.containsKey(wordPair.getKey())) {
+                temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
+            }
+            queryVector.put(wordPair.getKey(), temp);
+        }
+        double numerator = 0.0;
+        for (KVPair<String, Double> wordPair : queryVector) {
+            double docWordScore = 0.0;
+            if (documentVector.containsKey(wordPair.getKey())) {
+                docWordScore = documentVector.get(wordPair.getKey());
+            }
+            double queryWordScore = queryVector.get(wordPair.getKey());
+            numerator += docWordScore * queryWordScore;
+        }
+        double denominator = norm(documentVector) * norm(queryVector);
+        if (denominator != 0) {
+            return numerator / denominator;
+        }
         return 0.0;
+    }
+    
+    private double norm(IDictionary<String, Double> input) {
+        double output = 0.0;
+        for (KVPair<String, Double> wordPair : input) {
+            double score = wordPair.getValue();
+            output += score * score;
+        }
+        return Math.sqrt(output);
     }
 }
