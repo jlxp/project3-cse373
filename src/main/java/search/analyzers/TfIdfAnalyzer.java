@@ -5,7 +5,6 @@ import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.IList;
 import datastructures.interfaces.ISet;
-import misc.exceptions.NotYetImplementedException;
 import search.models.Webpage;
 
 import java.net.URI;
@@ -62,19 +61,25 @@ public class TfIdfAnalyzer {
         IDictionary<String, Double> result = new ChainedHashDictionary<>();
         IDictionary<String, Integer> counter = new ChainedHashDictionary<>();
         for (Webpage page : pages) {
-            for (String word : page.getWords()) {
-                if (!counter.containsKey(word)) {
-                    counter.put(word, 0);
+            IDictionary<String, Double> temp = this.computeTfScores(page.getWords());
+            for (KVPair<String, Double> wordPair : temp) {
+                if(!counter.containsKey(wordPair.getKey())) {
+                    counter.put(wordPair.getKey(), 0);
                 }
-                counter.put(word, counter.get(word) + 1);
+                counter.put(wordPair.getKey(), counter.get(wordPair.getKey()) + 1);
             }
+            
+            
         }
-        for (KVPair<String, Integer> word : counter) {
+        for (KVPair<String, Integer> wordPair : counter) {
             double idfTemp = 0.0;
-            idfTemp += word.getValue();
+            idfTemp += wordPair.getValue();
+            System.out.println("word: " + wordPair.getKey() + ", double: " + idfTemp);
             idfTemp /= pages.size();
+            System.out.println(idfTemp);
             idfTemp = Math.log(idfTemp);
-            result.put(word.getKey(), idfTemp);
+            System.out.println(idfTemp);
+            result.put(wordPair.getKey(), Math.abs(idfTemp));
         }
         return result;
     }
@@ -114,8 +119,7 @@ public class TfIdfAnalyzer {
             IDictionary<String, Double> tfScores = this.computeTfScores(page.getWords());
             IDictionary<String, Double> computed = new ChainedHashDictionary<>();
             for (KVPair<String, Double> wordPair : tfScores) {
-                double temp = 0.0;
-                temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
+                double temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
                 computed.put(wordPair.getKey(), temp);
             }
             result.put(page.getUri(), computed);
