@@ -1,6 +1,7 @@
 package search.analyzers;
 
 import datastructures.concrete.ChainedHashSet;
+import datastructures.concrete.KVPair;
 import datastructures.concrete.dictionaries.ChainedHashDictionary;
 import datastructures.interfaces.IDictionary;
 import datastructures.interfaces.ISet;
@@ -97,14 +98,30 @@ public class PageRankAnalyzer {
                                                    int limit,
                                                    double epsilon) {
         // Step 1: The initialize step should go here
-
+        IDictionary<URI, Double> result = new ChainedHashDictionary<>();
+        for (KVPair<URI, ISet<URI>> page : graph) {
+            result.put(page.getKey(), 1.0/graph.size());
+        }
+        
         for (int i = 0; i < limit; i++) {
             // Step 2: The update step should go here
-
+            double oldRank;
+            double newRating = 0.0;
+            for (KVPair<URI, ISet<URI>> page : graph) {
+                ISet<URI> pageLinks = page.getValue();
+                oldRank = result.get(page.getKey());
+                for (URI link : pageLinks) {
+                    newRating += (decay * result.get(link)) / pageLinks.size();
+                }
+                newRating += (1 - decay) / graph.size();
+                if (oldRank - newRating < epsilon) {
+                    
+                }
+                result.put(page.getKey(), newRating);
+            }
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
             
-            throw new NotYetImplementedException();
         }
         throw new NotYetImplementedException();
     }
