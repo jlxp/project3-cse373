@@ -105,25 +105,31 @@ public class PageRankAnalyzer {
         
         for (int i = 0; i < limit; i++) {
             // Step 2: The update step should go here
-            double oldRank;
+            IDictionary<URI, Double> temp = new ChainedHashDictionary<>();
+//            double oldRank;
             double newRating = 0.0;
             for (KVPair<URI, ISet<URI>> page : graph) {
                 ISet<URI> pageLinks = page.getValue();
-                oldRank = result.get(page.getKey());
+//                oldRank = result.get(page.getKey());
                 for (URI link : pageLinks) {
-                    newRating += (decay * result.get(link)) / pageLinks.size();
+                    newRating += (decay * result.get(link)) / 1;
                 }
-                newRating += (1 - decay) / graph.size();
-                if (oldRank - newRating < epsilon) {
-                    
-                }
-                result.put(page.getKey(), newRating);
+                newRating += (1.0 - decay) / graph.size();
+//                if (oldRank - newRating > epsilon) {
+                    temp.put(page.getKey(), newRating);
+//                }
             }
             // Step 3: the convergence step should go here.
             // Return early if we've converged.
-            
+            for (KVPair<URI, Double> link : result) {
+                if (result.get(link.getKey()) - temp.get(link.getKey()) > epsilon) {
+                    result = temp;
+                    break;
+                }
+            }
+            break;
         }
-        throw new NotYetImplementedException();
+        return result;
     }
 
     /**
@@ -134,6 +140,6 @@ public class PageRankAnalyzer {
      */
     public double computePageRank(URI pageUri) {
         // Implementation note: this method should be very simple: just one line!
-        return 1.0;
+        return pageRanks.get(pageUri);
     }
 }
