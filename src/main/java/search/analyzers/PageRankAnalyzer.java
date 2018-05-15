@@ -146,6 +146,6 @@ public class PageRankAnalyzer {
      */
     public double computePageRank(URI pageUri) {
         // Implementation note: this method should be very simple: just one line!
-        return pageRanks.get(pageUri);
+        return this.pageRanks.get(pageUri);
     }
 }
