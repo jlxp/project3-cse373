@@ -82,7 +82,7 @@ public class TestPageRankAnalyzer extends BaseTest {
         pages.add(this.buildPage(pageCUri, new URI[] {}));
         pages.add(this.buildPage(pageDUri, new URI[] {pageAUri}));
         pages.add(this.buildPage(pageEUri, new URI[] {pageDUri}));
-
+        
         PageRankAnalyzer analyzer = new PageRankAnalyzer(pages, 0.85, 0.00001, 100);
 
         assertEquals(0.31706, analyzer.computePageRank(pageAUri), DELTA);

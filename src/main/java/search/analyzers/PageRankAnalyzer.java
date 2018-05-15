@@ -98,38 +98,59 @@ public class PageRankAnalyzer {
                                                    int limit,
                                                    double epsilon) {
         // Step 1: The initialize step should go here
-        IDictionary<URI, Double> result = new ChainedHashDictionary<>();
-        for (KVPair<URI, ISet<URI>> page : graph) {
-            result.put(page.getKey(), 1.0/graph.size());
+        IDictionary<URI, Double> newValue = new ChainedHashDictionary<>();
+        IDictionary<URI, Double> oldValue = new ChainedHashDictionary<>();
+        
+        for (KVPair<URI, ISet<URI>> page : graph) { // initialize the value
+            URI pageName = page.getKey();
+            oldValue.put(pageName, 1.0/graph.size());
+            newValue.put(pageName, 0.0);
+        }
+        int processed = 1;  
+        int i = 0; 
+        // below one has same logic with our initial thought, but construct with graph-friendly dict-friendly logic
+        // my logic is following: 
+        // make a newValue dictionary to keep track of new values based on the values from old value dictionary that was processed in last step
+        // then, make that newValue dictionary as "new" oldValue dictionary and reset the newValue Dictionary to 0.0 as its value of KVPair
+        // if everything converges, then break this while loop and return the oldValue
+        // if it doesn't, then return the oldValue dictionary when it was at the step of limit. 
+        while (i < limit && processed > 0) {
+            processed = 0;
+            for (KVPair<URI, ISet<URI>> page : graph) { // step 2: update!
+                ISet<URI> pageLinks = page.getValue();
+                URI pageName = page.getKey();
+                if (pageLinks.isEmpty()) {
+                    for (KVPair<URI, Double> link : newValue) { // if there is no out going links, increment to send every link
+                        URI linkName = link.getKey(); 
+                        newValue.put(linkName, newValue.get(linkName) + (decay * oldValue.get(pageName)) / graph.size()); 
+                        // equation is (decay * oldRank) / N
+                    }
+                } else { // if there is out going links. 
+                    for (URI link : pageLinks) { // give the page rank to the out going links
+                        newValue.put(link, newValue.get(link) + (decay * oldValue.get(pageName)) / pageLinks.size());
+                        // equation is (decay * oldRank) / Uniq. Link
+                    }
+                } 
+            }
+            for (KVPair<URI, Double> page : newValue) { 
+                URI pageName = page.getKey(); 
+                newValue.put(pageName, newValue.get(pageName) + (1 - decay) / graph.size());
+                // equation is ((1 - decay) / N)
+            }
+            
+            
+            for (KVPair<URI, Double> page : oldValue) { // step 3: check for convergence and recursion if necessary
+                URI pageName = page.getKey();                           
+                if (Math.abs(newValue.get(pageName) - oldValue.get(pageName)) > epsilon) { 
+                    processed++; // implying if processed = 0 means the graph has converged!!
+                } 
+                oldValue.put(pageName, newValue.get(pageName)); // modify anyway
+                newValue.put(pageName, 0.0); // modify anyway
+            }  
+            i++;  
         }
         
-        for (int i = 0; i < limit; i++) {
-            // Step 2: The update step should go here
-            IDictionary<URI, Double> temp = new ChainedHashDictionary<>();
-//            double oldRank;
-            double newRating = 0.0;
-            for (KVPair<URI, ISet<URI>> page : graph) {
-                ISet<URI> pageLinks = page.getValue();
-//                oldRank = result.get(page.getKey());
-                for (URI link : pageLinks) {
-                    newRating += (decay * result.get(link)) / 1;
-                }
-                newRating += (1.0 - decay) / graph.size();
-//                if (oldRank - newRating > epsilon) {
-                    temp.put(page.getKey(), newRating);
-//                }
-            }
-            // Step 3: the convergence step should go here.
-            // Return early if we've converged.
-            for (KVPair<URI, Double> link : result) {
-                if (result.get(link.getKey()) - temp.get(link.getKey()) > epsilon) {
-                    result = temp;
-                    break;
-                }
-            }
-            break;
-        }
-        return result;
+        return oldValue;
     }
 
     /**
