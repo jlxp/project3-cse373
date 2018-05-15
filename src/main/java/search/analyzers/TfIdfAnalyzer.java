@@ -64,12 +64,12 @@ public class TfIdfAnalyzer {
         for (Webpage page : pages) { 
             ISet<String> temp = new ChainedHashSet<>();
             for (String word : page.getWords()) {
-                if(!temp.contains(word)) {
+                if (!temp.contains(word)) {
                     temp.add(word);
                 }   
             }  
             for (String word : temp) {
-                if(!counter.containsKey(word)) {
+                if (!counter.containsKey(word)) {
                     counter.put(word, 0);
                 }
                 counter.put(word, counter.get(word) + 1);
