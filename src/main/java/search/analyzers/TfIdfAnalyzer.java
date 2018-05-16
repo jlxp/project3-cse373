@@ -121,8 +121,9 @@ public class TfIdfAnalyzer {
             IDictionary<String, Double> tfScores = this.computeTfScores(page.getWords());
             IDictionary<String, Double> computed = new ChainedHashDictionary<>();
             for (KVPair<String, Double> wordPair : tfScores) {
-                double temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
-                computed.put(wordPair.getKey(), temp);
+                String word = wordPair.getKey();
+                double score = wordPair.getValue() * this.idfScores.get(word);
+                computed.put(word, score);
             }
             result.put(page.getUri(), computed);
         }
@@ -144,23 +145,29 @@ public class TfIdfAnalyzer {
         //    Add a third field containing that information.
         //
         // 2. See if you can combine or merge one or more loops.
+        
+        // MY (Jong) Idea: It would be creating field to make documentVector more comfortable 
+        // Make the dictionary of URI and its dictionary of <URI, Double> (so word's TfIdf score within the URI)
+        // or <URI, <String, Double>> kinda constructor (or <String, <URI, Double>> if order matters). 
         IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
         IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
         for (KVPair<String, Double> wordPair : tfScores) {
-            double temp = 0.0;
-            if (this.idfScores.containsKey(wordPair.getKey())) {
-                temp = wordPair.getValue() * this.idfScores.get(wordPair.getKey());
+            double score = 0.0;
+            String word = wordPair.getKey();
+            if (this.idfScores.containsKey(word)) {
+                score = wordPair.getValue() * this.idfScores.get(word);
             }
-            queryVector.put(wordPair.getKey(), temp);
+            queryVector.put(word, score);
         }
         double numerator = 0.0;
         for (KVPair<String, Double> wordPair : queryVector) {
             double docWordScore = 0.0;
-            if (documentVector.containsKey(wordPair.getKey())) {
-                docWordScore = documentVector.get(wordPair.getKey());
+            String word = wordPair.getKey();
+            if (documentVector.containsKey(word)) {
+                docWordScore = documentVector.get(word);
             }
-            double queryWordScore = queryVector.get(wordPair.getKey());
+            double queryWordScore = queryVector.get(word);
             numerator += docWordScore * queryWordScore;
         }
         double denominator = norm(documentVector) * norm(queryVector);
