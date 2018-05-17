@@ -162,40 +162,25 @@ public class TfIdfAnalyzer {
         // 2. See if you can combine or merge one or more loops.
         
         double documentVector = this.documentNormVector.get(pageUri);
+        IDictionary<String, Double> document = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
-        IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
         double numerator = 0.0; 
-        double docVec = 0.0;
-        double queVec = 0.0;
-//        for (KVPair<String, Double> wordPair : tfScores) {
-//            double tfScore = 0.0;
-//            double docWordScore = 0.0;
-//            String word = wordPair.getKey();
-//            if (this.idfScores.containsKey(word)) {
-//                tfScore = wordPair.getValue() * this.idfScores.get(word);
-//            }
-//            if (documentVector.containsKey(word)) {
-//                docWordScore = documentVector.get(word);
-//            }
-//            numerator += docWordScore * tfScore;
-//            docVec += docWordScore * docWordScore;
-//            queVec += tfScore * tfScore;       
-//        }
-//        double denominator = Math.sqrt(docVec) * Math.sqrt(queVec); 
         
-//        double numerator = 0.0;        
+        double queVec = 0.0;
         for (KVPair<String, Double> wordPair : tfScores) {
-            double score = 0.0;
+            double tfScore = 0.0;
+            double docWordScore = 0.0;
             String word = wordPair.getKey();
             if (this.idfScores.containsKey(word)) {
-                score = wordPair.getValue() * this.idfScores.get(word);
+                tfScore = wordPair.getValue() * this.idfScores.get(word);
             }
-            queryVector.put(word, score);
-            double docWordScore = 0.0;
-            numerator += docWordScore * score;
-            docVec += docWordScore * docWordScore;
-            queVec += score * score;
+            if (document.containsKey(word)) {
+                docWordScore = document.get(word);
+            }
+            numerator += docWordScore * tfScore;
+            queVec += tfScore * tfScore;       
         }
+        
         double denominator = documentVector * Math.sqrt(queVec);
      //   double denominator = norm(documentVector) * Math.sqrt(queVec);
      //   double denominator = norm(documentVector) * norm(queryVector);
