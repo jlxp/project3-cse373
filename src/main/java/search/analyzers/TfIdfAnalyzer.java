@@ -161,8 +161,8 @@ public class TfIdfAnalyzer {
         //
         // 2. See if you can combine or merge one or more loops.
         
-        double documentVector = this.documentNormVector.get(pageUri);
-        IDictionary<String, Double> document = this.documentTfIdfVectors.get(pageUri);
+        double documentVectorNorm = this.documentNormVector.get(pageUri);
+        IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
         double numerator = 0.0; 
         
@@ -174,16 +174,14 @@ public class TfIdfAnalyzer {
             if (this.idfScores.containsKey(word)) {
                 tfScore = wordPair.getValue() * this.idfScores.get(word);
             }
-            if (document.containsKey(word)) {
-                docWordScore = document.get(word);
+            if (documentVector.containsKey(word)) {
+                docWordScore = documentVector.get(word);
             }
             numerator += docWordScore * tfScore;
             queVec += tfScore * tfScore;       
         }
         
-        double denominator = documentVector * Math.sqrt(queVec);
-     //   double denominator = norm(documentVector) * Math.sqrt(queVec);
-     //   double denominator = norm(documentVector) * norm(queryVector);
+        double denominator = documentVectorNorm * Math.sqrt(queVec);
         if (denominator != 0) {
             return numerator / denominator;
         }
