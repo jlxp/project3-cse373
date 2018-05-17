@@ -121,7 +121,9 @@ public class TestTfIdfAnalyzer extends BaseTest {
         query.add("the");
         query.add("1");
         query.add("cat");
-
+        System.out.println(analyzer.computeRelevance(query, URI.create("http://example.com/fake-page-a.html")));
+        System.out.println(analyzer.computeRelevance(query, URI.create("http://example.com/fake-page-b.html")));
+        System.out.println(analyzer.computeRelevance(query, URI.create("http://example.com/fake-page-c.html")));
         assertEquals(
                 0.353553,
                 analyzer.computeRelevance(query, URI.create("http://example.com/fake-page-a.html")),

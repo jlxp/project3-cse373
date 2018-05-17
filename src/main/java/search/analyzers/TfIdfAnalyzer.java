@@ -146,13 +146,29 @@ public class TfIdfAnalyzer {
         //
         // 2. See if you can combine or merge one or more loops.
         
-        // MY (Jong) Idea: It would be creating field to make documentVector more comfortable 
-        // Make the dictionary of URI and its dictionary of <URI, Double> (so word's TfIdf score within the URI)
-        // or <URI, <String, Double>> kinda constructor (or <String, <URI, Double>> if order matters). 
         IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
         IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
-        double numerator = 0.0;        
+        double numerator = 0.0; 
+        double docVec = 0.0;
+        double queVec = 0.0;
+//        for (KVPair<String, Double> wordPair : tfScores) {
+//            double tfScore = 0.0;
+//            double docWordScore = 0.0;
+//            String word = wordPair.getKey();
+//            if (this.idfScores.containsKey(word)) {
+//                tfScore = wordPair.getValue() * this.idfScores.get(word);
+//            }
+//            if (documentVector.containsKey(word)) {
+//                docWordScore = documentVector.get(word);
+//            }
+//            numerator += docWordScore * tfScore;
+//            docVec += docWordScore * docWordScore;
+//            queVec += tfScore * tfScore;       
+//        }
+//        double denominator = Math.sqrt(docVec) * Math.sqrt(queVec); 
+        
+//        double numerator = 0.0;        
         for (KVPair<String, Double> wordPair : tfScores) {
             double score = 0.0;
             String word = wordPair.getKey();
@@ -161,14 +177,16 @@ public class TfIdfAnalyzer {
             }
             queryVector.put(word, score);
             double docWordScore = 0.0;
-            //String word = wordPair.getKey();
             if (documentVector.containsKey(word)) {
                 docWordScore = documentVector.get(word);
             }
-            double queryWordScore = queryVector.get(word);
-            numerator += docWordScore * queryWordScore;
+            numerator += docWordScore * score;
+            docVec += docWordScore * docWordScore;
+            queVec += score * score;
         }
-        double denominator = norm(documentVector) * norm(queryVector);
+        double denominator = Math.sqrt(docVec) * Math.sqrt(queVec);
+     //   double denominator = norm(documentVector) * Math.sqrt(queVec);
+     //   double denominator = norm(documentVector) * norm(queryVector);
         if (denominator != 0) {
             return numerator / denominator;
         }
