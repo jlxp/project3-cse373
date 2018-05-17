@@ -189,13 +189,4 @@ public class TfIdfAnalyzer {
         }
         return 0.0;
     }
-    
-    private double norm(IDictionary<String, Double> input) {
-        double output = 0.0;
-        for (KVPair<String, Double> wordPair : input) {
-            double score = wordPair.getValue();
-            output += score * score;
-        }
-        return Math.sqrt(output);
-    }
 }
