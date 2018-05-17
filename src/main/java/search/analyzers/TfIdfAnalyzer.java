@@ -39,8 +39,8 @@ public class TfIdfAnalyzer {
         // on this class.
 
         this.idfScores = this.computeIdfScores(webpages);
+        this.documentNormVector = new ChainedHashDictionary<>(); 
         this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
-        this.documentNormVector = this.computeNormValue(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -122,29 +122,20 @@ public class TfIdfAnalyzer {
         for (Webpage page : pages) {
             IDictionary<String, Double> tfScores = this.computeTfScores(page.getWords());
             IDictionary<String, Double> computed = new ChainedHashDictionary<>();
+            
+            double norm = 0.0;
             for (KVPair<String, Double> wordPair : tfScores) {
                 String word = wordPair.getKey();
                 double score = wordPair.getValue() * this.idfScores.get(word);
                 computed.put(word, score);
+                norm += score * score; 
             }
-            result.put(page.getUri(), computed);
+            result.put(page.getUri(), computed);  
+            this.documentNormVector.put(page.getUri(), Math.sqrt(norm));
         }
         return result;
     }
-
-    public IDictionary<URI, Double> computeNormValue(ISet<Webpage> webpages) {
-        IDictionary<URI, Double> result = new ChainedHashDictionary<>();
-        for (Webpage page : webpages) {
-            URI pageName = page.getUri();
-            double norm = 0.0;
-            for(KVPair<String, Double> wordPair : this.documentTfIdfVectors.get(page.getUri())) {
-                double value = wordPair.getValue();
-                norm += value * value;
-            }
-            result.put(pageName, Math.sqrt(norm));
-        }
-        return result;
-    }
+    
     /**
      * Returns the cosine similarity between the TF-IDF vector for the given query and the
      * URI's document.
@@ -164,9 +155,9 @@ public class TfIdfAnalyzer {
         double documentVectorNorm = this.documentNormVector.get(pageUri);
         IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
-        double numerator = 0.0; 
-        
+        double numerator = 0.0;         
         double queVec = 0.0;
+        
         for (KVPair<String, Double> wordPair : tfScores) {
             double tfScore = 0.0;
             double docWordScore = 0.0;
