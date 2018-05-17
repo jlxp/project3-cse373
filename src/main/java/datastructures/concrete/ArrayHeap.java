@@ -9,7 +9,7 @@ import misc.exceptions.EmptyContainerException;
 public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
     // See spec: you must implement a implement a 4-heap.
     private static final int NUM_CHILDREN = 4;
-    private static final int INIT_SIZE = NUM_CHILDREN * (NUM_CHILDREN + 1) + 1;
+    private static final int INIT_SIZE = 10;
     
     // You MUST use this field to store the contents of your heap.
     // You may NOT rename this field: we will be inspecting it within
@@ -103,7 +103,7 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null");
         }
-        if (this.heapSize >= this.heap.length - 1) { // resize
+        if (this.heapSize * NUM_CHILDREN + NUM_CHILDREN > this.heap.length) { // resize
             T[] temp = this.makeArrayOfT(this.heap.length * 2);
             for (int i = 0; i < this.heapSize; i++) {
                 temp[i] = this.heap[i];
