@@ -124,21 +124,12 @@ public class PageRankAnalyzer {
             for (KVPair<URI, Double> page : newValue) { 
                 URI pageName = page.getKey(); 
                 newValue.put(pageName, newValue.get(pageName) + (1 - decay) / graph.size());
-                //URI pageName = page.getKey(); Jong-- I merged for loops and tests still work! 
                 if (Math.abs(newValue.get(pageName) - oldValue.get(pageName)) > epsilon) { 
                     processed++;
                 } 
                 oldValue.put(pageName, newValue.get(pageName));
                 newValue.put(pageName, 0.0);
-            }
-//            for (KVPair<URI, Double> page : oldValue) {
-//                URI pageName = page.getKey();                           
-//                if (Math.abs(newValue.get(pageName) - oldValue.get(pageName)) > epsilon) { 
-//                    processed++;
-//                } 
-//                oldValue.put(pageName, newValue.get(pageName));
-//                newValue.put(pageName, 0.0);
-//            }  
+            } 
             i++;  
         }
         return oldValue;

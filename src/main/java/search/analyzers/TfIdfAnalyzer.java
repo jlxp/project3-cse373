@@ -28,7 +28,6 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors;
 
     // Feel free to add extra fields and helper methods.
-    private IDictionary<URI, IDictionary<String, Double>> tfScores; 
 
     public TfIdfAnalyzer(ISet<Webpage> webpages) {
         // Implementation note: We have commented these method calls out so your
@@ -39,7 +38,6 @@ public class TfIdfAnalyzer {
         // on this class.
 
         this.idfScores = this.computeIdfScores(webpages);
-        this.tfScores = this.computeAllTfScores(webpages); 
         this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
     }
 
@@ -111,16 +109,6 @@ public class TfIdfAnalyzer {
         }
         return result;
     }
-    
-    private IDictionary<URI, IDictionary<String, Double>> computeAllTfScores(ISet<Webpage> webpages) {
-        IDictionary<URI, IDictionary<String, Double>> result = new ChainedHashDictionary<>();
-        for (Webpage webpage : webpages) {
-            IDictionary<String, Double> indTfScore = this.computeTfScores(webpage.getWords());
-            result.put(webpage.getUri(), indTfScore);
-        }
-        
-        return result; 
-    }
 
     /**
      * See spec for more details on what this method should do.
@@ -130,10 +118,11 @@ public class TfIdfAnalyzer {
         // call the computeTfScores(...) method.
         IDictionary<URI, IDictionary<String, Double>> result = new ChainedHashDictionary<>();
         for (Webpage page : pages) {
+            IDictionary<String, Double> tfScores = this.computeTfScores(page.getWords());
             IDictionary<String, Double> computed = new ChainedHashDictionary<>();
-            URI pageUri = page.getUri();
-            for (String word : page.getWords()) {
-                double score = this.tfScores.get(pageUri).get(word) * this.idfScores.get(word);
+            for (KVPair<String, Double> wordPair : tfScores) {
+                String word = wordPair.getKey();
+                double score = wordPair.getValue() * this.idfScores.get(word);
                 computed.put(word, score);
             }
             result.put(page.getUri(), computed);
@@ -179,16 +168,6 @@ public class TfIdfAnalyzer {
             double queryWordScore = queryVector.get(word);
             numerator += docWordScore * queryWordScore;
         }
-//        double numerator = 0.0;
-//        for (KVPair<String, Double> wordPair : queryVector) {
-//            double docWordScore = 0.0;
-//            String word = wordPair.getKey();
-//            if (documentVector.containsKey(word)) {
-//                docWordScore = documentVector.get(word);
-//            }
-//            double queryWordScore = queryVector.get(word);
-//            numerator += docWordScore * queryWordScore;
-//        }
         double denominator = norm(documentVector) * norm(queryVector);
         if (denominator != 0) {
             return numerator / denominator;
