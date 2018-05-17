@@ -163,6 +163,7 @@ public class TfIdfAnalyzer {
         IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
         IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
+        double numerator = 0.0;        
         for (KVPair<String, Double> wordPair : tfScores) {
             double score = 0.0;
             String word = wordPair.getKey();
@@ -170,17 +171,24 @@ public class TfIdfAnalyzer {
                 score = wordPair.getValue() * this.idfScores.get(word);
             }
             queryVector.put(word, score);
-        }
-        double numerator = 0.0;
-        for (KVPair<String, Double> wordPair : queryVector) {
             double docWordScore = 0.0;
-            String word = wordPair.getKey();
+            //String word = wordPair.getKey();
             if (documentVector.containsKey(word)) {
                 docWordScore = documentVector.get(word);
             }
             double queryWordScore = queryVector.get(word);
             numerator += docWordScore * queryWordScore;
         }
+//        double numerator = 0.0;
+//        for (KVPair<String, Double> wordPair : queryVector) {
+//            double docWordScore = 0.0;
+//            String word = wordPair.getKey();
+//            if (documentVector.containsKey(word)) {
+//                docWordScore = documentVector.get(word);
+//            }
+//            double queryWordScore = queryVector.get(word);
+//            numerator += docWordScore * queryWordScore;
+//        }
         double denominator = norm(documentVector) * norm(queryVector);
         if (denominator != 0) {
             return numerator / denominator;
