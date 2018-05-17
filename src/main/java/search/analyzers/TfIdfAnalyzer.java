@@ -28,6 +28,7 @@ public class TfIdfAnalyzer {
     private IDictionary<URI, IDictionary<String, Double>> documentTfIdfVectors;
 
     // Feel free to add extra fields and helper methods.
+    private IDictionary<URI, Double> documentNormVector; 
 
     public TfIdfAnalyzer(ISet<Webpage> webpages) {
         // Implementation note: We have commented these method calls out so your
@@ -39,6 +40,7 @@ public class TfIdfAnalyzer {
 
         this.idfScores = this.computeIdfScores(webpages);
         this.documentTfIdfVectors = this.computeAllDocumentTfIdfVectors(webpages);
+        this.documentNormVector = this.computeNormValue(webpages);
     }
 
     // Note: this method, strictly speaking, doesn't need to exist. However,
@@ -130,6 +132,19 @@ public class TfIdfAnalyzer {
         return result;
     }
 
+    public IDictionary<URI, Double> computeNormValue(ISet<Webpage> webpages) {
+        IDictionary<URI, Double> result = new ChainedHashDictionary<>();
+        for (Webpage page : webpages) {
+            URI pageName = page.getUri();
+            double norm = 0.0;
+            for(KVPair<String, Double> wordPair : this.documentTfIdfVectors.get(page.getUri())) {
+                double value = wordPair.getValue();
+                norm += value * value;
+            }
+            result.put(pageName, Math.sqrt(norm));
+        }
+        return result;
+    }
     /**
      * Returns the cosine similarity between the TF-IDF vector for the given query and the
      * URI's document.
@@ -146,7 +161,7 @@ public class TfIdfAnalyzer {
         //
         // 2. See if you can combine or merge one or more loops.
         
-        IDictionary<String, Double> documentVector = this.documentTfIdfVectors.get(pageUri);
+        double documentVector = this.documentNormVector.get(pageUri);
         IDictionary<String, Double> tfScores = this.computeTfScores(query);
         IDictionary<String, Double> queryVector = new ChainedHashDictionary<>();
         double numerator = 0.0; 
@@ -177,14 +192,11 @@ public class TfIdfAnalyzer {
             }
             queryVector.put(word, score);
             double docWordScore = 0.0;
-            if (documentVector.containsKey(word)) {
-                docWordScore = documentVector.get(word);
-            }
             numerator += docWordScore * score;
             docVec += docWordScore * docWordScore;
             queVec += score * score;
         }
-        double denominator = Math.sqrt(docVec) * Math.sqrt(queVec);
+        double denominator = documentVector * Math.sqrt(queVec);
      //   double denominator = norm(documentVector) * Math.sqrt(queVec);
      //   double denominator = norm(documentVector) * norm(queryVector);
         if (denominator != 0) {
