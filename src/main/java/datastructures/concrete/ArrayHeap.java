@@ -103,8 +103,8 @@ public class ArrayHeap<T extends Comparable<T>> implements IPriorityQueue<T> {
         if (item == null) {
             throw new IllegalArgumentException("item cannot be null");
         }
-        if (2 * this.heapSize > this.heap.length) { // resize
-            T[] temp = this.makeArrayOfT(this.heap.length * 2);
+        if (NUM_CHILDREN * this.heapSize + NUM_CHILDREN > this.heap.length) { // resize
+            T[] temp = this.makeArrayOfT(this.heap.length * NUM_CHILDREN + NUM_CHILDREN);
             for (int i = 0; i < this.heapSize; i++) {
                 temp[i] = this.heap[i];
             }
