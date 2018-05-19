@@ -87,23 +87,6 @@ public class TestTopKSortFunctionality extends BaseTest {
     }
     
     @Test(timeout=SECOND)
-    public void testNullElementCase() {
-        IList<Integer> list = new DoubleLinkedList<>();
-        for (int i = 0; i < 100; i++) {
-            list.add(i);
-        }
-        
-        list.add(null);
-        
-        try {
-            IList<Integer> top = Searcher.topKSort(10, list);
-            fail("Expected IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            // do nothing yay
-        }
-    }
-    
-    @Test(timeout=SECOND)
     public void testEmptyCase() {
         IList<Integer> list = new DoubleLinkedList<>();
         IList<Integer> top = Searcher.topKSort(5, list);
